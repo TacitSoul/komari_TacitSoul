@@ -5,7 +5,35 @@
 
 这是整理后的独立项目首发版本，统一版本号为 `v1.0.0`；主题标识仍为 `TacitSoul`，保留现有功能与兼容性。
 
-![预览](preview.png)
+[在线演示](https://agent.52dh.com.cn/) · [下载 v1.0.0](https://github.com/TacitSoul/komari_TacitSoul/releases/tag/v1.0.0) · [效果展示](#效果展示)
+
+![地球视图 · 深空主题 · 真实站点截图](docs/screenshots/desktop-globe-dark.png)
+
+## 效果展示
+
+以下图片于 **2026-11-16** 截取自 [在线演示站](https://agent.52dh.com.cn/) 的访客页面，使用真实页面与实时数据，未进入后台或修改服务器配置。节点、指标和可用性结果会随时间变化，截图仅用于展示界面效果。
+
+### 桌面端 · 深空主题
+
+| 矩阵视图 | 卡片视图 |
+| --- | --- |
+| ![矩阵视图 · 深空主题](docs/screenshots/desktop-matrix-dark.png) | ![卡片视图 · 深空主题](docs/screenshots/desktop-cards-dark.png) |
+| **表格视图** | **可用性视图** |
+| ![表格视图 · 深空主题](docs/screenshots/desktop-table-dark.png) | ![可用性视图 · 深空主题](docs/screenshots/desktop-uptime-dark.png) |
+
+### 桌面端 · 简洁主题
+
+![矩阵视图 · 简洁主题](docs/screenshots/desktop-matrix-light.png)
+
+### 手机端 · 响应式布局
+
+使用移动设备模拟与 **390 px** 窄屏视口展示卡片视图，非真机拍摄。
+
+<p align="center">
+  <img src="docs/screenshots/mobile-cards-dark.png" alt="手机端卡片视图 · 深空主题 · 390 px 视口" width="320" />
+</p>
+
+完整原图与截图说明见 [`docs/screenshots/`](docs/screenshots/README.md)。
 
 ## 功能
 
