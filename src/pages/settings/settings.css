@@ -1,0 +1,479 @@
+/* In-theme settings page. Surfaces follow the clean / deepspace palette. */
+.ts-settings-page {
+  display: grid;
+  gap: 18px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding-bottom: 96px;
+  color: var(--foreground);
+  font-size: 14px;
+}
+
+.ts-settings-header h1,
+.ts-settings-gate h1 {
+  margin: 6px 0 4px;
+  font-size: 22px;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+}
+
+.ts-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.ts-back:hover {
+  color: var(--primary);
+}
+
+.ts-settings-muted {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.ts-settings-muted a {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.ts-settings-error {
+  margin: 0;
+  color: var(--destructive);
+  font-size: 12px;
+}
+
+.ts-settings-banner {
+  padding: 10px 14px;
+  border: 1px solid color-mix(in oklch, var(--warning) 40%, transparent);
+  border-radius: 12px;
+  background: color-mix(in oklch, var(--warning) 10%, transparent);
+  color: var(--foreground);
+  font-size: 12.5px;
+}
+
+.ts-settings-gate {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+}
+
+.ts-settings-section {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  overflow: hidden;
+}
+
+.ts-settings-section-head {
+  padding: 14px 14px 10px 14px;
+  border-bottom: 1px solid color-mix(in oklch, var(--border) 70%, transparent);
+}
+
+.ts-settings-section-head h2 {
+  margin: 0 0 0 1px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.ts-settings-section-head p {
+  margin: 4px 0 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.ts-settings-section-body {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px 14px;
+}
+
+.ts-settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in oklch, var(--border) 70%, transparent);
+  border-radius: 10px;
+  background: var(--telemetry-surface);
+}
+
+.ts-settings-row.is-stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.ts-settings-row.is-disabled {
+  opacity: 0.55;
+}
+
+.ts-settings-row-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ts-settings-row-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ts-settings-row-desc {
+  color: var(--muted-foreground);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.ts-settings-row input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.ts-settings-page select,
+.ts-settings-page input[type="text"],
+.ts-settings-page input[type="number"] {
+  min-width: 0;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--foreground);
+  font: inherit;
+  font-size: 13px;
+}
+
+.ts-settings-page select {
+  appearance: none;
+  padding-right: 30px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted-foreground) 50%),
+    linear-gradient(135deg, var(--muted-foreground) 50%, transparent 50%);
+  background-position:
+    calc(100% - 15px) 50%,
+    calc(100% - 10px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.ts-settings-row select {
+  flex: 0 0 auto;
+  min-width: 140px;
+}
+
+.ts-settings-page select:focus-visible,
+.ts-settings-page input:focus-visible,
+.ts-button:focus-visible {
+  outline: 2px solid color-mix(in oklch, var(--ring) 60%, transparent);
+  outline-offset: 2px;
+}
+
+.ts-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.ts-button:hover:not(:disabled) {
+  border-color: color-mix(in oklch, var(--primary) 50%, var(--border));
+  color: var(--primary);
+}
+
+.ts-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ts-button.is-primary {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.ts-button.is-primary:hover:not(:disabled) {
+  color: var(--primary-foreground);
+  filter: brightness(1.08);
+}
+
+.ts-button.is-ghost {
+  background: transparent;
+}
+
+.ts-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 7px;
+  border: 1px solid color-mix(in oklch, var(--border) 85%, transparent);
+  border-radius: 999px;
+  color: var(--muted-foreground);
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.ts-task-list {
+  display: grid;
+  gap: 8px;
+}
+
+.ts-task {
+  border: 1px solid color-mix(in oklch, var(--border) 70%, transparent);
+  border-radius: 12px;
+  background: var(--telemetry-surface);
+}
+
+.ts-task-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 12px;
+  padding: 12px;
+}
+
+.ts-task-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.ts-task-title strong {
+  font-size: 14px;
+}
+
+.ts-task-summary {
+  grid-column: 1;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ts-task-actions {
+  display: flex;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-items: center;
+  gap: 6px;
+}
+
+.ts-task-body {
+  display: grid;
+  gap: 10px;
+  padding: 0 12px 12px;
+  border-top: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
+  padding-top: 12px;
+}
+
+.ts-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--muted-foreground);
+}
+
+.ts-search input {
+  flex: 1;
+  height: 32px;
+  border: 0;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.ts-node-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 6px;
+}
+
+.ts-node {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in oklch, var(--border) 70%, transparent);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.ts-node.is-checked {
+  border-color: color-mix(in oklch, var(--primary) 45%, var(--border));
+  background: color-mix(in oklch, var(--primary) 7%, transparent);
+}
+
+.ts-node input {
+  margin-top: 2px;
+  accent-color: var(--primary);
+}
+
+.ts-node-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ts-node-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ts-node-name span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ts-node-meta {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+.ts-multi {
+  display: grid;
+  gap: 10px;
+}
+
+.ts-multi {
+  gap: 8px;
+}
+
+.ts-multi-body {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid color-mix(in oklch, var(--border) 70%, transparent);
+  border-radius: 10px;
+  background: var(--telemetry-surface);
+}
+
+.ts-multi-slots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.ts-multi-slots label {
+  display: grid;
+  gap: 4px;
+}
+
+.ts-multi-slots label > span {
+  color: var(--muted-foreground);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.ts-multi-override {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ts-reset-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 6px;
+}
+
+.ts-reset-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 8px 6px 10px;
+  border: 1px solid color-mix(in oklch, var(--border) 70%, transparent);
+  border-radius: 10px;
+}
+
+.ts-reset-item input {
+  width: 64px;
+  text-align: center;
+}
+
+.ts-reset-item:has([aria-invalid="true"]) {
+  flex-wrap: wrap;
+}
+
+.ts-reset-item .ts-settings-error {
+  flex-basis: 100%;
+}
+
+.ts-settings-savebar {
+  position: sticky;
+  bottom: calc(3rem + env(safe-area-inset-bottom, 0px));
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in oklch, var(--popover) 96%, transparent);
+  box-shadow: 0 -2px 0 0 color-mix(in oklch, var(--primary) 18%, transparent), 0 16px 36px -14px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.ts-settings-savebar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .ts-multi-slots {
+    grid-template-columns: 1fr;
+  }
+
+  .ts-task-head {
+    grid-template-columns: 1fr;
+  }
+
+  .ts-task-actions {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .ts-settings-row {
+    flex-wrap: wrap;
+  }
+}

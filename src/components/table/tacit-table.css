@@ -1,0 +1,556 @@
+/*
+ * latency history blocks, traffic badges and type scale from its NodeTable / MetricSegmentBar /
+ * LatencyHistoryBlocks. Colours map onto the clean / deepspace palette; latency blocks use the
+ * theme-wide latency scale (--ts-latency-*).
+ */
+@import "../../matrix/styles/tokens.css";
+
+.ztable {
+  --tt-line: color-mix(in oklch, var(--border) 85%, transparent);
+  --tt-line-strong: color-mix(in oklch, var(--foreground) 22%, var(--border));
+  --tt-elevate: color-mix(in oklch, var(--foreground) 3.5%, transparent);
+  --tt-fill-muted: color-mix(in oklch, var(--foreground) 16%, transparent);
+  --tt-frame: color-mix(in oklch, var(--muted-foreground) 45%, transparent);
+  --tt-fg: var(--foreground);
+  --tt-fg-strong: color-mix(in oklch, var(--foreground) 92%, black);
+  --tt-fg-muted: var(--muted-foreground);
+  --tt-accent: var(--primary);
+  --tt-ok: var(--ts-status-success);
+  --tt-warn: var(--ts-status-warning);
+  --tt-bad: var(--ts-status-error);
+  --tt-mono: var(--font-sans);
+
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--tt-fg);
+  overflow: hidden;
+}
+
+[data-theme="deepspace"] .ztable {
+  --tt-fg-strong: var(--foreground);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.ztable-scroll {
+  overflow-x: auto;
+}
+
+.ztable table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.ztable thead tr {
+  border-bottom: 1px solid var(--tt-line-strong);
+  color: var(--tt-fg-muted);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.ztable th {
+  padding: 0 6px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ztable th:first-child,
+.ztable td:first-child {
+  padding-left: 12px;
+}
+
+.ztable th:last-child,
+.ztable td:last-child {
+  padding-right: 12px;
+}
+
+.ztable-sort {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: color 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ztable-sort:hover,
+.ztable-sort.is-active {
+  color: var(--tt-accent);
+}
+
+.ztable-sort:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.ztable-sort-mark {
+  display: inline-block;
+  opacity: 0.55;
+  transition:
+    transform 300ms cubic-bezier(0.34, 1.45, 0.64, 1),
+    opacity 300ms;
+}
+
+.ztable-sort.is-active .ztable-sort-mark {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.ztable tbody {
+  font-family: var(--tt-mono);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.ztable-row {
+  border-bottom: 1px solid var(--tt-line);
+  cursor: pointer;
+  transition:
+    background-color 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ztable-row:last-child {
+  border-bottom: 0;
+}
+
+.ztable-row:hover {
+  background: var(--tt-elevate);
+}
+
+.ztable-row:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+
+.ztable-row.is-offline {
+  background: color-mix(in oklch, var(--tt-fill-muted) 10%, transparent);
+  color: var(--tt-fg-muted);
+}
+
+.ztable td {
+  padding: 12px 6px;
+  vertical-align: middle;
+}
+
+/* name cell */
+.ztable-name {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--font-sans);
+  font-weight: 600;
+}
+
+.ztable-name-line {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.ztable-name-text {
+  min-width: 0;
+  max-width: 220px;
+  overflow: hidden;
+  color: var(--tt-fg-strong);
+  text-overflow: ellipsis;
+}
+
+.ztable-row:hover .ztable-name-text {
+  color: var(--tt-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ztable-row.is-offline .ztable-name-text {
+  color: var(--tt-fg-muted);
+}
+
+.ztable-flag {
+  border-radius: 2px;
+}
+
+.ztable-offline-badge {
+  flex-shrink: 0;
+  padding: 1px 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--tt-fg-muted);
+  font-family: var(--tt-mono);
+  font-size: 0.625rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.ztable-remark {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--tt-fg-muted);
+}
+
+.ztable-tags {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 4px;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.ztable-tag {
+  max-width: 140px;
+  overflow: hidden;
+  color: var(--tt-tag, var(--tt-fg-muted));
+  font-family: var(--font-sans);
+  font-weight: 500;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ztable-tag-sep {
+  color: var(--tt-frame);
+  font-family: var(--tt-mono);
+  font-weight: 300;
+  user-select: none;
+}
+
+.ztable-tag-more {
+  color: var(--tt-fg-muted);
+  font-family: var(--tt-mono);
+  font-size: 0.75rem;
+}
+
+/* system cell */
+.ztable-sys {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--tt-fg-muted);
+}
+
+.ztable-sys-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.ztable-sys-line > img {
+  flex-shrink: 0;
+}
+
+.ztable-caption {
+  color: color-mix(in oklch, var(--tt-fg-muted) 85%, transparent);
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+
+/* metric widget: value + bracketed segment track */
+.ztable-metric {
+  display: inline-grid;
+  flex-shrink: 0;
+  grid-template-columns: 3.375rem 4.75rem;
+  align-items: center;
+  column-gap: 4px;
+  font-family: var(--tt-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.ztable-metric-value {
+  font-weight: 500;
+  text-align: right;
+}
+
+.ztable-metric-value.is-warn {
+  color: var(--tt-warn);
+}
+
+.ztable-metric-value.is-bad {
+  color: var(--tt-bad);
+}
+
+.ztable-track {
+  display: inline-flex;
+  box-sizing: border-box;
+  width: 100%;
+  height: 10px;
+  align-items: stretch;
+  padding: 0 2px;
+  border-inline: 1px solid var(--tt-frame);
+}
+
+.ztable-segments {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  gap: 1px;
+}
+
+.ztable-seg {
+  min-width: 0;
+  border-radius: 0.5px;
+  background: var(--tt-fill-muted);
+}
+
+.ztable-seg.is-on {
+  background: var(--tt-fg-strong);
+}
+
+.ztable-seg.is-on.is-warn {
+  background: var(--tt-warn);
+}
+
+.ztable-seg.is-on.is-bad {
+  background: var(--tt-bad);
+}
+
+/* latency history blocks */
+.ztable-blocks .ztable-seg-slot {
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  align-items: flex-end;
+}
+
+.ztable-blocks .ztable-block {
+  display: block;
+  width: 100%;
+  min-height: 2px;
+  height: 45%;
+  border-radius: 0.5px;
+  background: var(--tt-fill-muted);
+}
+
+.ztable-blocks .ztable-block.has-data {
+  height: 85%;
+  background: var(--tt-block);
+}
+
+.ztable-latency-value {
+  color: var(--tt-value, inherit);
+}
+
+:root[data-appearance="light"] .ztable-latency-value {
+  color: color-mix(in oklch, var(--tt-value, currentColor) 58%, black);
+}
+
+.ztable-dim {
+  color: var(--tt-fg-muted);
+}
+
+/* bandwidth / traffic / expiry */
+/* ↓ / ↑ stack to fit the content column. */
+.ztable-bw {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  font-weight: 500;
+}
+
+.ztable-item .ztable-bw {
+  flex-direction: row;
+  align-items: baseline;
+  column-gap: 8px;
+}
+
+.ztable-traffic {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.ztable-badge {
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 1px 4px;
+  border: 1px solid color-mix(in srgb, var(--tt-badge) 28%, transparent);
+  border-radius: 2px;
+  color: var(--tt-badge);
+  background: color-mix(in srgb, var(--tt-badge) 11%, transparent);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+  line-height: 1;
+}
+
+.ztable-badge.is-sum {
+  --tt-badge: #2563eb;
+}
+
+.ztable-badge.is-max {
+  --tt-badge: #e11d48;
+}
+
+.ztable-badge.is-min {
+  --tt-badge: #059669;
+}
+
+.ztable-badge.is-up {
+  --tt-badge: #d97706;
+}
+
+.ztable-badge.is-down {
+  --tt-badge: #0891b2;
+}
+
+.ztable-badge.is-unlimited {
+  --tt-badge: var(--tt-accent);
+}
+
+:root[data-appearance="dark"] .ztable-badge.is-sum {
+  --tt-badge: #93c5fd;
+}
+
+:root[data-appearance="dark"] .ztable-badge.is-max {
+  --tt-badge: #fda4af;
+}
+
+:root[data-appearance="dark"] .ztable-badge.is-min {
+  --tt-badge: #6ee7b7;
+}
+
+:root[data-appearance="dark"] .ztable-badge.is-up {
+  --tt-badge: #fcd34d;
+}
+
+:root[data-appearance="dark"] .ztable-badge.is-down {
+  --tt-badge: #67e8f9;
+}
+
+.ztable-badge-inf {
+  display: inline-block;
+  transform: scale(1.45);
+  letter-spacing: normal;
+  line-height: 1;
+}
+
+.ztable-billing {
+  display: inline-flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+  font-weight: 500;
+}
+
+.ztable-item-head .ztable-billing {
+  flex-shrink: 0;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.ztable-billing.is-urgent {
+  color: var(--tt-bad);
+}
+
+.ztable-empty {
+  padding: 32px 16px;
+  color: var(--tt-fg-muted);
+  font-family: var(--font-sans);
+  white-space: normal;
+}
+
+/* ── phones / tablets: stacked rows ── */
+
+.ztable-list {
+  font-family: var(--tt-mono);
+  font-size: 0.8125rem;
+}
+
+.ztable-item {
+  display: grid;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--tt-line);
+  cursor: pointer;
+}
+
+.ztable-item:last-child {
+  border-bottom: 0;
+}
+
+.ztable-item:hover {
+  background: var(--tt-elevate);
+}
+
+.ztable-item:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+
+.ztable-item.is-offline {
+  color: var(--tt-fg-muted);
+}
+
+.ztable-item-head {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ztable-item-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px 14px;
+}
+
+.ztable-item-metric {
+  display: grid;
+  gap: 3px;
+}
+
+.ztable-item-label {
+  color: var(--tt-fg-muted);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+}
+
+.ztable-item-foot {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  align-items: start;
+  gap: 8px 14px;
+}
+
+.ztable-item .ztable-metric {
+  width: 100%;
+  grid-template-columns: 3.375rem minmax(0, 1fr);
+}
+
+.ztable-item .ztable-metric-value {
+  text-align: left;
+}
+
+/* Content column of 1280–1535 px screens: caption size for the text cells. The metric bars
+   keep their rem widths, so they look identical. */
+@media (max-width: 1535px) {
+  .ztable tbody {
+    font-size: 0.8125rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ztable-row,
+  .ztable-sort,
+  .ztable-sort-mark {
+    transition: none;
+  }
+}

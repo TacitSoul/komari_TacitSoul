@@ -1,0 +1,108 @@
+/*
+ * --ts-* tokens for the matrix components.
+ *
+ * Data colours (metric bars, latency / loss ramps, speed heat, status, tags) are the matrix
+ * layer's own values, per appearance. Surfaces, borders, text and the brand accent are mapped onto the
+ * base theme's tokens, so the same components sit naturally in the clean and deepspace palettes.
+ */
+:root,
+:root[data-appearance="light"] {
+  /* ── follow the base palette ── */
+  --ts-surface: var(--card);
+  --ts-surface-a: var(--card);
+  --ts-surface-elev: var(--popover);
+  --ts-surface-elev-a: var(--popover);
+  --ts-surface-sunken: var(--muted);
+  --ts-border: var(--border);
+  --ts-border-subtle: color-mix(in oklch, var(--border) 70%, transparent);
+  --ts-border-strong: color-mix(in oklch, var(--foreground) 18%, var(--border));
+  --ts-hairline: color-mix(in oklch, var(--border) 62%, transparent);
+  --ts-text-primary: var(--foreground);
+  --ts-text-secondary: color-mix(in oklch, var(--foreground) 45%, var(--muted-foreground));
+  --ts-text-tertiary: var(--muted-foreground);
+  --ts-text-on-strong: var(--primary-foreground);
+  --ts-fill-secondary: color-mix(in oklch, var(--foreground) 10%, transparent);
+  --ts-fill-tertiary: color-mix(in oklch, var(--foreground) 5%, transparent);
+  --ts-hover-bg: var(--muted);
+  --ts-hover-bg-a: var(--muted);
+  --ts-progress-bg: var(--telemetry-track);
+  --ts-accent-500: var(--primary);
+  --ts-accent-strong: color-mix(in oklch, var(--primary) 84%, black);
+  --ts-ring: color-mix(in oklch, var(--ring) 45%, transparent);
+
+  /* ── typography of the matrix card ── */
+  --ts-font-sans: var(--font-sans);
+  --ts-font-numeric: var(--font-sans);
+
+  /* ── data colours (light) ── */
+  --ts-progress-cpu: #3b82f6;
+  --ts-progress-memory: #8b5cf6;
+  --ts-progress-swap: #6366f1;
+  --ts-progress-disk: #e97b35;
+  --ts-progress-network: #10b981;
+  --ts-progress-load: #ec4899;
+  --ts-traffic-heat-spectrum: linear-gradient(
+    to right in oklch,
+    oklch(0.72 0.16 150) 0%,
+    oklch(0.72 0.16 150) 10%,
+    oklch(0.8 0.18 128) 28%,
+    oklch(0.86 0.18 110) 44%,
+    oklch(0.8 0.18 85) 58%,
+    oklch(0.72 0.19 62) 72%,
+    oklch(0.65 0.21 40) 86%,
+    oklch(0.6 0.22 27) 100%
+  );
+  --ts-status-success: #2f9e65;
+  --ts-status-warning: #e9a23b;
+  --ts-status-error: #dc2626;
+  --ts-status-info: #3b82f6;
+  --ts-status-online: #2f9e65;
+  --ts-status-offline: #dc2626;
+  --ts-latency-excellent: #2fc66e;
+  --ts-latency-good: #9fe339;
+  --ts-latency-moderate: #cbd83a;
+  --ts-latency-elevated: #e2a928;
+  --ts-latency-critical: #dc2626;
+  --ts-speed-idle: #3aa76a;
+  --ts-speed-low: #d9992b;
+  --ts-speed-high: #e07a35;
+  --ts-speed-max: #d6463d;
+  --ts-traffic-up: #3b82f6;
+  --ts-traffic-down: #2f9e65;
+  --ts-tag-red-bg: #fee2e2;
+  --ts-tag-red-fg: #b91c1c;
+  --ts-tag-gray-bg: #e5e5e5;
+  --ts-tag-gray-fg: #3f3f46;
+}
+
+:root[data-appearance="dark"] {
+  /* ── data colours (dark) ── */
+  --ts-progress-cpu: #539bf5;
+  --ts-progress-memory: #b083f0;
+  --ts-progress-swap: #986ee2;
+  --ts-progress-disk: #e0823d;
+  --ts-progress-network: #57ab5a;
+  --ts-progress-load: #e275ad;
+  --ts-status-success: #57ab5a;
+  --ts-status-warning: #daaa3f;
+  --ts-status-error: #f47067;
+  --ts-status-info: #539bf5;
+  --ts-status-online: #57ab5a;
+  --ts-status-offline: #f47067;
+  --ts-latency-excellent: #2fc66e;
+  --ts-latency-good: #9fe339;
+  --ts-latency-moderate: #cbd83a;
+  --ts-latency-elevated: #e2a928;
+  --ts-latency-critical: #f47067;
+  --ts-speed-idle: #57ab5a;
+  --ts-speed-low: #daaa3f;
+  --ts-speed-high: #e0823d;
+  --ts-speed-max: #f47067;
+  --ts-traffic-up: #539bf5;
+  --ts-traffic-down: #57ab5a;
+  --ts-tag-red-bg: rgba(244, 112, 103, 0.16);
+  --ts-tag-red-fg: #ffb8b0;
+  --ts-tag-gray-bg: rgba(145, 152, 161, 0.18);
+  --ts-tag-gray-fg: #d1d7e0;
+  --ts-accent-strong: color-mix(in oklch, var(--primary) 84%, white);
+}

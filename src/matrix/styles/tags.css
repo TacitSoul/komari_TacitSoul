@@ -1,0 +1,44 @@
+[data-tag="ruby"],
+[data-tag="red"],
+[data-tag="tomato"],
+[data-tag="crimson"] {
+  --ts-tag-bg: var(--ts-tag-red-bg);
+  --ts-tag-fg: var(--ts-tag-red-fg);}
+[data-tag="gold"],
+[data-tag="amber"],
+[data-tag="yellow"] {
+  --ts-tag-bg: rgba(233, 162, 59, 0.16);
+  --ts-tag-fg: #e9a23b;}
+[data-tag="orange"],
+[data-tag="bronze"],
+[data-tag="brown"] {
+  --ts-tag-bg: rgba(233, 123, 53, 0.16);
+  --ts-tag-fg: #e97b35;}
+[data-tag="green"],
+[data-tag="grass"],
+[data-tag="mint"],
+[data-tag="jade"],
+[data-tag="lime"] {
+  --ts-tag-bg: rgba(84, 180, 132, 0.16);
+  --ts-tag-fg: #54b484;}
+[data-tag="blue"],
+[data-tag="sky"],
+[data-tag="cyan"],
+[data-tag="teal"] {
+  --ts-tag-bg: rgba(78, 129, 238, 0.16);
+  --ts-tag-fg: #4e81ee;}
+[data-tag="violet"],
+[data-tag="purple"],
+[data-tag="plum"],
+[data-tag="iris"],
+[data-tag="indigo"],
+[data-tag="pink"] {
+  --ts-tag-bg: rgba(157, 90, 239, 0.16);
+  --ts-tag-fg: #9d5aef;}
+[data-tag="slate"] {
+  --ts-tag-bg: rgba(100, 116, 139, 0.16);
+  --ts-tag-fg: #64748b;}
+[data-tag="gray"],
+[data-tag=""] {
+  --ts-tag-bg: var(--ts-tag-gray-bg);
+  --ts-tag-fg: var(--ts-tag-gray-fg);}

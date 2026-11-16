@@ -1,0 +1,599 @@
+/*
+ * Globe view — node panel ("节点群状态").
+ *
+ * Rows: status + flag + name + system on one line, group / tag chips, then a fixed-column
+ * telemetry line (CPU and memory as mini bars with right-aligned values, speeds right-aligned)
+ * so numbers line up from row to row. Surfaces follow the clean / deepspace palette.
+ */
+
+@import "../../matrix/styles/tokens.css";
+@import "../../matrix/styles/tags.css";
+@import "../../matrix/styles/os-logo.css";
+
+.fleet-panel {
+  --fp-pad: 14px;
+  --fp-ok: #22c55e;
+  --fp-warn: var(--warning);
+  --fp-bad: var(--destructive);
+  --fp-hair: color-mix(in oklch, var(--border) 70%, transparent);
+}
+
+/* ── header ── */
+
+.fleet-panel-head {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px var(--fp-pad) 12px;
+  border-bottom: 1px solid var(--fp-hair);
+  background: linear-gradient(180deg, color-mix(in oklch, var(--primary) 5%, transparent), transparent);
+}
+
+.fleet-panel-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.fleet-panel-title-text {
+  color: var(--foreground);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.fleet-panel-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 10px;
+  border: 1px solid var(--fp-hair);
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--muted) 55%, transparent);
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.fleet-panel-count-online {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+.fleet-panel-count-sep {
+  opacity: 0.45;
+}
+
+.fleet-panel-count-offline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 2px;
+  color: var(--fp-bad);
+  font-weight: 700;
+}
+
+.fleet-panel-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+}
+
+.fleet-panel-dot.is-online {
+  background: var(--fp-ok);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--fp-ok) 18%, transparent);
+}
+
+.fleet-panel-dot.is-offline {
+  background: var(--fp-bad);
+}
+
+.fleet-panel-search {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 32px;
+  padding: 0 4px 0 10px;
+  border: 1px solid var(--fp-hair);
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--background) 60%, transparent);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.fleet-panel-search:focus-within {
+  border-color: color-mix(in oklch, var(--primary) 50%, var(--border));
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 14%, transparent);
+}
+
+.fleet-panel-search-icon {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+  color: var(--muted-foreground);
+}
+
+.fleet-panel-search input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  padding: 0 6px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 12.5px;
+}
+
+.fleet-panel-search input::placeholder {
+  color: color-mix(in oklch, var(--muted-foreground) 75%, transparent);
+}
+
+.fleet-panel-icon-btn {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease;
+}
+
+.fleet-panel-icon-btn:hover {
+  background: var(--muted);
+  color: var(--foreground);
+}
+
+.fleet-panel-icon-btn.is-active {
+  background: color-mix(in oklch, var(--primary) 14%, transparent);
+  color: var(--primary);
+}
+
+.fleet-panel-icon-btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 1px;
+}
+
+.fleet-panel-matched {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── rows ── */
+
+.fleet-row {
+  position: relative;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 7px;
+  padding: 11px var(--fp-pad) 12px calc(var(--fp-pad) + 2px);
+  border: 0;
+  border-bottom: 1px solid var(--fp-hair);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 160ms ease;
+}
+
+.fleet-row::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 0;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--primary);
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+
+.fleet-row:hover {
+  background: color-mix(in oklch, var(--primary) 5%, transparent);
+}
+
+.fleet-row.is-selected {
+  background: color-mix(in oklch, var(--primary) 9%, transparent);
+}
+
+.fleet-row.is-selected::before {
+  opacity: 1;
+}
+
+.fleet-row:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+
+.fleet-row-head {
+  display: grid;
+  min-width: 0;
+  /* Reserve the same status/flag/system slots even when metadata is absent.
+     The 10.5rem allowance protects chips + system on narrow drawers. */
+  grid-template-columns: 7px 16px minmax(0, min(var(--fp-name-width, 8rem), max(0px, calc(100% - 10.5rem)))) minmax(0, 1fr) 4.5rem;
+  align-items: center;
+  gap: 8px;
+}
+
+.fleet-row-status {
+  grid-column: 1;
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+}
+
+.fleet-row-status.is-online {
+  background: var(--fp-ok);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--fp-ok) 16%, transparent);
+}
+
+.fleet-row-status.is-offline {
+  background: var(--fp-bad);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--fp-bad) 16%, transparent);
+}
+
+.fleet-row-flag {
+  grid-column: 2;
+  flex: 0 0 auto;
+}
+
+/* All names share the widest natural width; very long names can still ellipsize. */
+.fleet-row-name {
+  grid-column: 3;
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
+  color: var(--foreground);
+  font-size: 14px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fleet-row.is-offline .fleet-row-name {
+  color: color-mix(in oklch, var(--foreground) 60%, transparent);
+}
+
+/* system at the right end of line 1. When the line gets tight its name wraps onto a clipped
+   second line (so it disappears instead of turning into "De…") and only the logo remains. */
+.fleet-row-os {
+  grid-column: 5;
+  display: inline-flex;
+  min-width: 18px;
+  height: 16px;
+  flex: 0 6 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  column-gap: 4px;
+  margin-left: auto;
+  padding-left: 6px;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.fleet-row-os .os-logo {
+  flex: 0 0 auto;
+}
+
+.fleet-row-os-name {
+  flex: 0 0 auto;
+}
+
+/* Group/tags start at the same shared column in every row. */
+.fleet-row-chips {
+  grid-column: 4;
+  display: flex;
+  min-width: 0;
+  flex: 0 3 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+}
+
+.fleet-row-chips .fleet-chip {
+  flex: 0 0 auto;
+}
+
+.fleet-row-chips .fleet-chip.is-group,
+.fleet-row-chips .fleet-chip.is-tag {
+  flex: 0 1 auto;
+  min-width: 2.4em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fleet-row-chips .fleet-chip.is-group {
+  max-width: 7rem;
+}
+
+.fleet-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: 6px;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.fleet-chip.is-group {
+  background: color-mix(in oklch, var(--primary) 13%, transparent);
+  color: var(--primary);
+}
+
+.fleet-chip.is-hidden {
+  background: color-mix(in oklch, var(--warning) 16%, transparent);
+  color: var(--warning);
+}
+
+.fleet-chip.is-tag {
+  max-width: 7.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fleet-chip.is-tag[data-tag]:not([data-tag=""]) {
+  background: var(--ts-tag-bg, var(--muted));
+  color: var(--ts-tag-fg, var(--muted-foreground));
+}
+
+/* line 2: CPU ring · memory ring · speeds — three cells of the same height (28px), so their tops
+   and bottoms line up; columns are the same on every row */
+.fleet-row-metrics {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-left: 15px;
+}
+
+.fleet-row-metrics > .fleet-gauge {
+  width: 72px;
+  flex: 0 0 auto;
+}
+
+.fleet-row-metrics > .fleet-rate {
+  width: 48px;
+  flex: 0 0 auto;
+}
+
+.fleet-gauge {
+  --fp-tone: color-mix(in oklch, var(--primary) 80%, var(--foreground));
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.fleet-gauge.is-warning {
+  --fp-tone: #e9a23b;
+}
+
+.fleet-gauge.is-critical {
+  --fp-tone: #e5484d;
+}
+
+[data-theme="clean"] .fleet-gauge.is-warning .fleet-gauge-value {
+  color: #b45309;
+}
+
+[data-theme="clean"] .fleet-gauge.is-critical .fleet-gauge-value {
+  color: #b91c1c;
+}
+
+.fleet-gauge-ring {
+  display: block;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+}
+
+.fleet-gauge-track,
+.fleet-gauge-fill {
+  fill: none;
+  stroke-width: 4;
+}
+
+.fleet-gauge-track {
+  stroke: color-mix(in oklch, var(--foreground) 20%, transparent);
+}
+
+.fleet-gauge-fill {
+  stroke: var(--fp-tone);
+  stroke-linecap: butt;
+  transition: stroke-dasharray 500ms ease, stroke 300ms ease;
+}
+
+[data-theme="deepspace"] .fleet-gauge-fill {
+  filter: drop-shadow(0 0 2px color-mix(in oklch, var(--fp-tone) 70%, transparent));
+}
+
+.fleet-gauge-text {
+  display: flex;
+  height: 28px;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.fleet-gauge-label {
+  color: var(--muted-foreground);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 12px;
+  white-space: nowrap;
+}
+
+.fleet-gauge-value {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  line-height: 15px;
+  white-space: nowrap;
+}
+
+.fleet-gauge.is-warning .fleet-gauge-value,
+.fleet-gauge.is-critical .fleet-gauge-value {
+  color: var(--fp-tone);
+}
+
+.fleet-rate {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 3px;
+  row-gap: 0;
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  line-height: 14px;
+  white-space: nowrap;
+}
+
+.fleet-rate-value {
+  color: var(--foreground);
+  text-align: right;
+}
+
+/* upload blue / download green, the same pair as the matrix card */
+.fleet-rate-arrow.is-up {
+  color: #3b82f6;
+}
+
+.fleet-rate-arrow.is-down {
+  color: #10b981;
+}
+
+[data-theme="deepspace"] .fleet-rate-arrow.is-up {
+  color: #60a5fa;
+}
+
+[data-theme="deepspace"] .fleet-rate-arrow.is-down {
+  color: #34d399;
+}
+
+.fleet-row-offline {
+  padding-left: 15px;
+  color: var(--fp-bad);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+/* deepspace: a touch more glow on the live dot and selection */
+[data-theme="deepspace"] .fleet-panel-head {
+  background: linear-gradient(180deg, color-mix(in oklch, var(--primary) 9%, transparent), transparent);
+}
+
+[data-theme="deepspace"] .fleet-row.is-selected::before {
+  box-shadow: 0 0 10px color-mix(in oklch, var(--primary) 70%, transparent);
+}
+
+/* arrow sits right after the number ("239 KB/s ↑"); numbers right-aligned in the column */
+.fleet-rate-value {
+  order: 0;
+}
+
+[data-theme="deepspace"] .fleet-panel {
+  --fp-ok: #34d399;
+}
+
+/* tags: one neutral chip family; the group chip keeps the accent */
+.fleet-chip.is-tag {
+  background: color-mix(in oklch, var(--foreground) 8%, transparent);
+  color: color-mix(in oklch, var(--foreground) 72%, transparent);
+}
+
+.fleet-rate-arrow {
+  font-weight: 700;
+}
+
+/* list: thin scrollbar in the palette, fade at the bottom while more rows are below */
+.fleet-panel-list {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--foreground) 22%, transparent) transparent;
+}
+
+.fleet-panel-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.fleet-panel-list::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.fleet-panel-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.fleet-panel-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--foreground) 22%, transparent);
+}
+
+.fleet-panel-fade {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  height: 36px;
+  background: linear-gradient(to top, var(--card), transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+
+.fleet-panel-fade.is-visible {
+  opacity: 1;
+}
+
+/* two-line rows: a little tighter than the three-line layout */
+.fleet-row {
+  gap: 8px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.fleet-row.is-skeleton {
+  cursor: default;
+}
+
+[data-theme="clean"] .fleet-gauge-track {
+  stroke: color-mix(in oklch, var(--foreground) 16%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fleet-gauge-fill {
+    transition: none;
+  }
+}

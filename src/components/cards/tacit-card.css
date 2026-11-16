@@ -1,0 +1,647 @@
+/*
+ * Card view styles. Surfaces follow the clean / deepspace palette and data colours are the theme-wide --ts-* tokens.
+ */
+
+@import "../../matrix/styles/tokens.css";
+@import "../../matrix/styles/os-logo.css";
+
+.mcard-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.mcard {
+  --tc-pad: 18px;
+  --tc-radius: 12px;
+  --tc-surface: var(--card);
+  --tc-surface-high: color-mix(in oklch, var(--foreground) 5%, var(--card));
+  --tc-surface-highest: color-mix(in oklch, var(--foreground) 9%, var(--card));
+  --tc-overlay: color-mix(in oklch, var(--foreground) 5%, var(--background));
+  --tc-outline-variant: var(--border);
+  --tc-outline: color-mix(in oklch, var(--foreground) 32%, var(--border));
+  --tc-on-surface: var(--foreground);
+  --tc-on-surface-variant: var(--muted-foreground);
+  --tc-ok: var(--ts-status-success);
+  --tc-warn: var(--ts-status-warning);
+  --tc-bad: var(--ts-status-error);
+  --tc-up: var(--ts-traffic-up);
+  --tc-down: var(--ts-traffic-down);
+  --tc-motion: 150ms cubic-bezier(0.2, 0, 0, 1);
+
+  position: relative;
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  overflow: hidden;
+  container-type: inline-size;
+  border: 1px solid color-mix(in oklch, var(--tc-outline-variant) 78%, transparent);
+  border-radius: var(--tc-radius);
+  color: var(--tc-on-surface);
+  background: var(--tc-surface);
+  font-family: var(--ts-font-sans);
+  cursor: pointer;
+  transition:
+    border-color var(--tc-motion),
+    background-color var(--tc-motion);
+}
+
+[data-theme="deepspace"] .mcard {
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.mcard:hover {
+  border-color: var(--tc-outline);
+  background: color-mix(in oklch, var(--tc-on-surface) 8%, var(--tc-surface));
+}
+
+.mcard:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* ── header ── */
+
+.mcard-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: var(--tc-pad) var(--tc-pad) 8px;
+}
+
+.mcard-identity {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+}
+
+.mcard-flag {
+  border-radius: 3px;
+}
+
+.mcard-name {
+  overflow: hidden;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mcard-actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.mcard-icon-btn {
+  position: relative;
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  color: var(--tc-on-surface-variant);
+  background: transparent;
+  cursor: pointer;
+  transition: color var(--tc-motion);
+}
+
+.mcard-icon-btn::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: inherit;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity var(--tc-motion);
+}
+
+.mcard-icon-btn > * {
+  position: relative;
+  z-index: 1;
+}
+
+.mcard-icon-btn:hover {
+  color: var(--tc-on-surface);
+}
+
+.mcard-icon-btn:hover::before {
+  opacity: 0.08;
+}
+
+.mcard-icon-btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -4px;
+}
+
+.mcard-os {
+  display: inline-flex;
+}
+
+.mcard-tip {
+  display: grid;
+  gap: 2px;
+}
+
+/* ── content ── */
+
+.mcard-content {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 14px;
+  padding: 8px var(--tc-pad) var(--tc-pad);
+}
+
+.mcard-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mcard.is-offline .mcard-body {
+  opacity: 0.55;
+  filter: grayscale(0.6);
+}
+
+.mcard-resources {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+}
+
+.mcard-resources.is-single {
+  grid-template-columns: 1fr;
+}
+
+.mcard-res {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mcard-res-head,
+.mcard-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mcard-res-head {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+}
+
+.mcard-label {
+  color: var(--tc-on-surface-variant);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.mcard-num {
+  font-family: var(--ts-font-numeric);
+  font-variant-numeric: tabular-nums;
+}
+
+.mcard-res-head > .mcard-num {
+  font-weight: 800;
+}
+
+.mcard-hint {
+  overflow: hidden;
+  color: var(--tc-on-surface-variant);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mcard-hint .is-up {
+  color: var(--tc-up);
+}
+
+.mcard-hint .is-down {
+  color: var(--tc-down);
+}
+
+/* tags row: label sits on the first chip line when chips wrap */
+.mcard-row.is-tags {
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.mcard-row.is-tags > .mcard-tags {
+  justify-content: flex-start;
+}
+
+.mcard-split {
+  display: inline-block;
+  width: 6px;
+}
+
+/* capsule progress (md-linear-progress / TrafficProgress) */
+.mcard-bar {
+  position: relative;
+  display: flex;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--tc-surface-highest);
+}
+
+.mcard-bar-fill {
+  height: 100%;
+  background: var(--tc-fill, var(--primary));
+  transition:
+    width 250ms cubic-bezier(0.4, 0, 0.6, 1),
+    background-color 250ms cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.mcard-bar-fill.is-min {
+  min-width: 3px;
+}
+
+.mcard-bar-fill.is-end {
+  border-top-right-radius: 999px;
+  border-bottom-right-radius: 999px;
+}
+
+.mcard-bar-fill.is-ok {
+  --tc-fill: var(--tc-ok);
+}
+
+.mcard-bar-fill.is-warn {
+  --tc-fill: var(--tc-warn);
+}
+
+.mcard-bar-fill.is-bad {
+  --tc-fill: var(--tc-bad);
+}
+
+.mcard-bar-fill.is-up {
+  --tc-fill: var(--tc-up);
+}
+
+.mcard-bar-fill.is-down {
+  --tc-fill: var(--tc-down);
+}
+
+/* ── latency / loss / speed (NodePingSummary) ── */
+
+.mcard-ping {
+  display: grid;
+  min-width: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.mcard-ping.is-speed-only {
+  grid-template-columns: 1fr;
+}
+
+.mcard-ping-panel {
+  --tc-accent: var(--primary);
+  --tc-curve: var(--primary);
+  position: relative;
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+  overflow: hidden;
+  border-radius: 8px;
+  padding: 8px 10px 7px;
+  color: var(--tc-accent);
+  background: var(--tc-surface-high);
+}
+
+.mcard-ping-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--tc-on-surface);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--tc-motion);
+}
+
+.mcard-ping-panel:hover::before {
+  opacity: 0.08;
+}
+
+.mcard-ping-panel.is-empty {
+  --tc-accent: var(--tc-on-surface-variant);
+  --tc-curve: var(--tc-on-surface-variant);
+}
+
+.mcard-ping-head {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.mcard-ping-icon {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--tc-accent);
+  background: color-mix(in srgb, var(--tc-accent) 12%, transparent);
+}
+
+.mcard-ping-value,
+.mcard-speed strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--tc-on-surface);
+  font-family: var(--ts-font-numeric);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 16px;
+  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mcard-spark {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 28px;
+  min-width: 0;
+  overflow: visible;
+}
+
+.mcard-spark-base {
+  fill: none;
+  stroke: color-mix(in srgb, var(--tc-on-surface-variant) 18%, transparent);
+  stroke-dasharray: 3 4;
+  stroke-linecap: round;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+:root[data-appearance="dark"] .mcard-spark-base {
+  stroke: color-mix(in srgb, var(--tc-on-surface-variant) 30%, transparent);
+}
+
+.mcard-spark-area {
+  fill: color-mix(in srgb, var(--tc-curve) 14%, transparent);
+  pointer-events: none;
+}
+
+.mcard-spark-line {
+  fill: none;
+  stroke: var(--tc-curve);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.mcard-spark-dot {
+  fill: var(--tc-curve);
+  stroke: var(--tc-surface-high);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  pointer-events: none;
+}
+
+.mcard-spark-hit {
+  fill: transparent;
+  stroke: transparent;
+}
+
+.mcard-ping-panel.is-speed {
+  min-height: 54px;
+  align-content: space-between;
+  gap: 5px;
+}
+
+.mcard-ping.is-speed-only .mcard-ping-panel.is-speed {
+  min-height: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.mcard-speed {
+  --tc-accent: var(--tc-up);
+  position: relative;
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+}
+
+.mcard-speed.is-down {
+  --tc-accent: var(--tc-down);
+}
+
+.mcard-speed strong {
+  text-align: right;
+}
+
+/* ── tags ── */
+
+.mcard-tags {
+  display: inline-flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.mcard-chip {
+  --chip: var(--tc-on-surface-variant);
+  position: relative;
+  display: inline-flex;
+  min-height: 32px;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid color-mix(in srgb, var(--chip) 32%, var(--tc-outline-variant));
+  border-radius: 8px;
+  color: var(--chip);
+  background: color-mix(in srgb, var(--chip) 14%, transparent);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0.1px;
+  white-space: nowrap;
+}
+
+.mcard-chip.is-neutral {
+  border-color: var(--tc-outline);
+  background: transparent;
+}
+
+.mcard-chip > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mcard-chip > svg {
+  flex-shrink: 0;
+}
+
+/* ── offline overlay ── */
+
+.mcard-offline {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  border-radius: 0 0 var(--tc-radius) var(--tc-radius);
+  background: var(--tc-overlay);
+  pointer-events: none;
+  transition: opacity var(--tc-motion);
+}
+
+.mcard:hover .mcard-offline,
+.mcard:focus-visible .mcard-offline {
+  opacity: 0;
+}
+
+.mcard-offline-content {
+  display: flex;
+  max-width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  color: var(--tc-on-surface-variant);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.4px;
+  text-align: center;
+}
+
+.mcard-offline-content strong {
+  color: var(--tc-bad);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0.1px;
+}
+
+.mcard-offline-title {
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--tc-on-surface);
+  font-weight: 500;
+}
+
+.mcard-offline-title > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mcard-offline .mcard-tags {
+  justify-content: center;
+}
+
+/* Compact density, applied when the card itself is narrow (phones, 2-up tablets). */
+@container (max-width: 380px) {
+  .mcard-head {
+    padding: 14px 14px 6px;
+  }
+
+  .mcard-content {
+    padding: 6px 14px 14px;
+  }
+
+  .mcard-ping {
+    gap: 6px;
+  }
+
+  .mcard-ping-panel {
+    gap: 4px;
+    padding: 7px 6px 6px;
+  }
+
+  .mcard-speed {
+    grid-template-columns: 18px minmax(0, 1fr);
+    gap: 4px;
+  }
+
+  .mcard-speed .mcard-ping-icon,
+  .mcard-ping-head .mcard-ping-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .mcard-speed strong {
+    font-size: 11px;
+    letter-spacing: 0.2px;
+  }
+}
+
+/* very small phones (≈320 px): drop the speed icons, keep the numbers whole */
+@container (max-width: 310px) {
+  .mcard-speed {
+    grid-template-columns: 1fr;
+  }
+
+  .mcard-speed .mcard-ping-icon {
+    display: none;
+  }
+
+  .mcard-speed.is-up strong::before {
+    content: "↑ ";
+    color: var(--tc-up);
+  }
+
+  .mcard-speed.is-down strong::before {
+    content: "↓ ";
+    color: var(--tc-down);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mcard,
+  .mcard-bar-fill,
+  .mcard-offline,
+  .mcard-icon-btn,
+  .mcard-ping-panel::before {
+    transition: none;
+  }
+}

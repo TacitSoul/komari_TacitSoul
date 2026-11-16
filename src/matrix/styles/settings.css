@@ -1,0 +1,18 @@
+/* Three-line latency configuration panel used by the in-theme settings page. */
+@import "./tokens.css";
+@import "./surface.base.css";
+
+.multi-ping-config-panel {
+  font-family: var(--ts-font-sans);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+}
+
+.multi-ping-config-panel button {
+  cursor: pointer;
+}
+
+.multi-ping-config-panel :focus-visible {
+  outline: 2px solid var(--ts-ring);
+  outline-offset: 2px;
+}

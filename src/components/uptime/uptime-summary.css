@@ -1,0 +1,663 @@
+/*
+ * Uptime view — availability summary card.
+ * Ring gauge + verdict + four equal metrics + fleet timeline; clean / deepspace aware.
+ */
+
+.uptime-summary {
+  --us-ok: #22a35a;
+  --us-warn: #d97706;
+  --us-bad: #dc2626;
+  --us-none: var(--muted-foreground);
+  --us-tone: var(--us-none);
+  --us-hair: color-mix(in oklch, var(--border) 75%, transparent);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background:
+    radial-gradient(120% 140% at 0% 0%, color-mix(in oklch, var(--us-tone) 9%, transparent), transparent 55%),
+    var(--card);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -18px rgb(0 0 0 / 0.25);
+}
+
+[data-theme="deepspace"] .uptime-summary {
+  --us-hair: color-mix(in oklch, var(--foreground) 16%, transparent);
+  --us-ok: #34d399;
+  --us-warn: #fbbf24;
+  --us-bad: #f87171;
+  background:
+    radial-gradient(120% 140% at 0% 0%, color-mix(in oklch, var(--us-tone) 14%, transparent), transparent 55%),
+    var(--card);
+  box-shadow: inset 0 1px 0 color-mix(in oklch, var(--foreground) 6%, transparent), 0 18px 40px -28px rgb(0 0 0 / 0.8);
+}
+
+.uptime-summary.is-ok { --us-tone: var(--us-ok); }
+.uptime-summary.is-warn { --us-tone: var(--us-warn); }
+.uptime-summary.is-bad { --us-tone: var(--us-bad); }
+
+.uptime-summary-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: width 400ms ease;
+}
+
+.uptime-summary-main {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(16px, 2.6vw, 30px);
+  padding: clamp(16px, 2vw, 22px) clamp(16px, 2.4vw, 26px);
+}
+
+/* ── gauge ── */
+
+.uptime-gauge {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  flex: 0 0 auto;
+}
+
+.uptime-gauge svg {
+  width: 100%;
+  height: 100%;
+}
+
+.uptime-gauge-track {
+  fill: none;
+  stroke: color-mix(in oklch, var(--foreground) 9%, transparent);
+  stroke-width: 10;
+}
+
+.uptime-gauge-fill {
+  fill: none;
+  stroke: var(--us-tone);
+  stroke-linecap: round;
+  stroke-width: 10;
+  transition: stroke-dasharray 700ms cubic-bezier(0.25, 1, 0.5, 1), stroke 300ms ease;
+  filter: drop-shadow(0 0 3px color-mix(in oklch, var(--us-tone) 22%, transparent));
+}
+
+.uptime-gauge-tick {
+  stroke: color-mix(in oklch, var(--foreground) 60%, transparent);
+  stroke-linecap: round;
+  stroke-width: 2.5;
+}
+
+.uptime-gauge-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.uptime-gauge-value {
+  color: var(--foreground);
+  font-size: 26px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.uptime-gauge-value small {
+  margin-left: 1px;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.uptime-gauge-caption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 84px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+}
+
+.uptime-gauge-caption > span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.uptime-gauge-caption > span + span {
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+/* ── body ── */
+
+.uptime-summary-body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.uptime-summary-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+}
+
+.uptime-summary-verdict {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+}
+
+.uptime-verdict-icon {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: color-mix(in oklch, var(--us-tone) 14%, transparent);
+  color: var(--us-tone);
+}
+
+.uptime-verdict-title {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 17px;
+  font-weight: 720;
+  line-height: 1.25;
+}
+
+.uptime-verdict-sub {
+  margin: 2px 0 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.uptime-summary-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.uptime-range {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 10px;
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.uptime-range button {
+  min-width: 44px;
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted-foreground);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.uptime-range button:hover {
+  color: var(--foreground);
+}
+
+.uptime-range button.is-active {
+  background: var(--card);
+  color: var(--foreground);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08), 0 0 0 1px var(--us-hair);
+}
+
+[data-theme="deepspace"] .uptime-range button.is-active {
+  background: color-mix(in oklch, var(--primary) 18%, var(--card));
+  color: var(--primary);
+}
+
+.uptime-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--us-hair);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.uptime-icon-btn:hover {
+  background: color-mix(in oklch, var(--foreground) 5%, transparent);
+  color: var(--foreground);
+}
+
+.uptime-icon-btn.is-active {
+  border-color: color-mix(in oklch, var(--primary) 45%, var(--border));
+  background: color-mix(in oklch, var(--primary) 10%, transparent);
+  color: var(--primary);
+}
+
+.uptime-range button:focus-visible,
+.uptime-icon-btn:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* four equal metrics */
+.uptime-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.uptime-metric {
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--us-hair);
+  border-radius: 12px;
+  background: color-mix(in oklch, var(--background) 50%, transparent);
+}
+
+.uptime-metric dt {
+  margin: 0 0 4px;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-size: 11.5px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.uptime-metric dd {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+  gap: 4px;
+  margin: 0;
+  color: var(--foreground);
+}
+
+.uptime-metric dd strong {
+  overflow: hidden;
+  font-size: 18px;
+  font-weight: 720;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.uptime-metric dd span {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.uptime-metric dd.is-bad strong {
+  color: var(--us-bad);
+}
+
+.uptime-metric dd.is-empty strong {
+  color: var(--muted-foreground);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+/* fleet timeline */
+.uptime-fleet {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.uptime-fleet-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted-foreground);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.uptime-fleet-legend {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px 12px;
+  font-weight: 500;
+}
+
+.uptime-fleet-legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.uptime-fleet-legend i {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+/* the same colours as the cells below */
+.uptime-fleet-legend i.is-ok { background: var(--us-ok); }
+.uptime-fleet-legend i.is-partial { background: var(--us-warn); }
+.uptime-fleet-legend i.is-bad { background: var(--us-bad); }
+/* same fill as the empty cells; the outline keeps the small swatch visible on both palettes */
+.uptime-fleet-legend i.is-none {
+  background: color-mix(in oklch, var(--foreground) 8%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--foreground) 24%, transparent);
+}
+
+[data-theme="deepspace"] .uptime-fleet-legend i.is-none {
+  background: color-mix(in oklch, var(--foreground) 14%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--foreground) 38%, transparent);
+}
+
+.uptime-fleet-bar {
+  display: flex;
+  height: 22px;
+  gap: 2px;
+}
+
+.uptime-fleet-cell {
+  flex: 1 1 0;
+  min-width: 2px;
+  border-radius: 3px;
+  transition: transform 140ms ease, opacity 140ms ease;
+}
+
+.uptime-fleet-cell.is-ok { background: var(--us-ok); }
+.uptime-fleet-cell.is-partial { background: var(--us-warn); }
+.uptime-fleet-cell.is-bad { background: var(--us-bad); }
+.uptime-fleet-cell.is-none { background: color-mix(in oklch, var(--foreground) 8%, transparent); }
+
+[data-theme="deepspace"] .uptime-fleet-cell.is-ok {
+  background: color-mix(in oklch, var(--us-ok) 82%, transparent);
+}
+
+.uptime-fleet-bar:hover .uptime-fleet-cell {
+  opacity: 0.55;
+}
+
+.uptime-fleet-bar .uptime-fleet-cell:hover {
+  opacity: 1;
+  transform: scaleY(1.12);
+}
+
+/* ── responsive ── */
+
+@media (max-width: 1100px) {
+  .uptime-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .uptime-summary-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .uptime-summary-controls {
+    justify-content: space-between;
+  }
+
+  .uptime-range {
+    flex: 1 1 auto;
+  }
+
+  .uptime-range button {
+    flex: 1 1 0;
+  }
+
+  .uptime-fleet-legend {
+    display: none;
+  }
+}
+
+.uptime-fleet-axis {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted-foreground);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-theme="deepspace"] .uptime-metric dd span {
+  color: color-mix(in oklch, var(--foreground) 62%, transparent);
+}
+
+[data-theme="deepspace"] .uptime-range button.is-active {
+  color: var(--foreground);
+  background: color-mix(in oklch, var(--foreground) 12%, var(--card));
+}
+
+/* ══ node list (same card family as the summary) ══ */
+
+.uptime-view {
+  --us-ok: #22a35a;
+  --us-warn: #d97706;
+  --us-bad: #dc2626;
+  --us-hair: color-mix(in oklch, var(--border) 75%, transparent);
+}
+
+[data-theme="deepspace"] .uptime-view {
+  --us-ok: #34d399;
+  --us-warn: #fbbf24;
+  --us-bad: #f87171;
+  --us-hair: color-mix(in oklch, var(--foreground) 16%, transparent);
+}
+
+.uptime-list {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -18px rgb(0 0 0 / 0.25);
+}
+
+[data-theme="deepspace"] .uptime-list {
+  box-shadow: inset 0 1px 0 color-mix(in oklch, var(--foreground) 6%, transparent), 0 18px 40px -28px rgb(0 0 0 / 0.8);
+}
+
+.uptime-list-rows > * + * {
+  border-top: 1px solid var(--us-hair);
+}
+
+.uptime-view .uptime-row {
+  padding: 14px clamp(16px, 2.4vw, 26px);
+  background: transparent;
+}
+
+.uptime-view .uptime-row::before {
+  display: none;
+}
+
+.uptime-view .uptime-row:hover {
+  background: color-mix(in oklch, var(--primary) 4%, transparent);
+}
+
+[data-theme="deepspace"] .uptime-view .uptime-row:hover {
+  background: color-mix(in oklch, var(--primary) 7%, transparent);
+}
+
+.uptime-row-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+}
+
+.uptime-row-dot.is-online {
+  background: var(--us-ok);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--us-ok) 16%, transparent);
+}
+
+.uptime-row-dot.is-offline {
+  background: var(--us-bad);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--us-bad) 16%, transparent);
+}
+
+.uptime-row-group {
+  flex: 0 0 auto;
+  max-width: 8rem;
+  overflow: hidden;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: color-mix(in oklch, var(--primary) 12%, transparent);
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.uptime-row-pct {
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 720;
+}
+
+.uptime-row-pct.is-ok { color: var(--us-ok); }
+.uptime-row-pct.is-warn { color: var(--us-warn); }
+.uptime-row-pct.is-bad { color: var(--us-bad); }
+.uptime-row-pct.is-none { color: var(--muted-foreground); }
+
+/* per-node cells: same construction as the fleet timeline */
+.uptime-cells {
+  display: flex;
+  height: 22px;
+  gap: 2px;
+}
+
+.uptime-cells.is-loading {
+  border-radius: 4px;
+  background: color-mix(in oklch, var(--foreground) 6%, transparent);
+}
+
+.uptime-cell {
+  flex: 1 1 0;
+  min-width: 2px;
+  border-radius: 3px;
+  transition: opacity 120ms ease;
+}
+
+.uptime-cell.is-online { background: var(--us-ok); }
+.uptime-cell.is-partial { background: var(--us-warn); }
+.uptime-cell.is-offline { background: var(--us-bad); }
+.uptime-cell.is-unknown { background: color-mix(in oklch, var(--foreground) 8%, transparent); }
+
+[data-theme="deepspace"] .uptime-cell.is-online {
+  background: color-mix(in oklch, var(--us-ok) 82%, transparent);
+}
+
+/* row header ends flush with the bar; the hover chevron sits outside the flow */
+.uptime-row-chevron {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  width: 14px;
+  height: 14px;
+  color: var(--muted-foreground);
+  opacity: 0;
+  transform: translate(-4px, -50%);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.uptime-row:hover .uptime-row-chevron {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+
+/* same surface level for the summary and the list; the summary keeps a faint status wash */
+.uptime-summary,
+[data-theme="deepspace"] .uptime-summary {
+  background-color: var(--card);
+}
+
+/* phone: compact gauge beside the verdict, controls on their own row, so the node list starts on the first screen */
+@media (max-width: 640px) {
+  .uptime-summary-main {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .uptime-gauge {
+    display: none;
+  }
+
+  .uptime-gauge-inline {
+    display: grid;
+  }
+
+  .uptime-metric {
+    padding: 8px 10px;
+  }
+
+  .uptime-metric dd strong {
+    font-size: 16px;
+  }
+}
+
+/* small ring used in the verdict on phones (hidden on wider screens) */
+.uptime-gauge-inline {
+  position: relative;
+  display: none;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+}
+
+.uptime-gauge-inline svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.uptime-gauge-inline span {
+  position: relative;
+  color: var(--foreground);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+}
+
+@media (max-width: 640px) {
+  .uptime-summary-verdict .uptime-verdict-icon {
+    display: none;
+  }
+
+  /* after the base rule above, so it wins */
+  .uptime-summary .uptime-gauge-inline {
+    display: grid;
+  }
+}

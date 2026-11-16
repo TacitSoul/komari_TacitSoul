@@ -1,0 +1,206 @@
+/* Shared presentation only. Never targets globe canvas, markers or animation. */
+:root {
+  --monitor-panel-radius: 12px;
+  --monitor-control-radius: 8px;
+  --monitor-panel-line: color-mix(in oklch, var(--border) 85%, transparent);
+}
+
+body {
+  line-height: 1.5;
+}
+
+button, input, textarea, select {
+  font-family: var(--font-sans);
+}
+
+pre, code, kbd, samp {
+  font-family: var(--font-code);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Keep legacy class names compatible while using one actual UI family. */
+[data-theme] :is(.font-mono, .font-metric, .font-display, .recharts-text) {
+  font-family: var(--font-sans);
+}
+[data-theme] :is(pre, code, kbd, samp),
+[data-theme] :is(pre, code, kbd, samp).font-mono,
+[data-theme] :is(pre, code) .font-mono {
+  font-family: var(--font-code);
+}
+/* This is only the existing radar caption's font, not the radar animation. */
+[data-theme] .globe-radar-layer .radar-scan::after {
+  font-family: var(--font-sans);
+}
+
+[data-theme] :is(.type-hud-label, .type-hud-label-sm, .type-hud-column, .type-console-title, .type-panel-title) {
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--muted-foreground);
+}
+[data-theme] :is(.type-hud-label-sm, .type-hud-column, .type-console-title) {
+  font-size: 11px;
+  line-height: 16px;
+}
+
+/* A quiet application header; state and actions remain in the same components. */
+[data-theme] .app-header {
+  background: var(--background);
+  border-bottom-color: var(--border);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+[data-theme] .app-header :is(.hud-scanner-effect, .header-neon-line) {
+  display: none;
+}
+[data-theme] .app-header .view-tabs {
+  border-radius: var(--monitor-control-radius);
+  background: var(--muted);
+  border-color: var(--monitor-panel-line);
+}
+[data-theme] .app-header .view-tabs [role="tab"] {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: normal;
+  text-transform: none;
+}
+[data-theme] .app-header .view-tabs-indicator {
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+}
+
+/* Align the five content surfaces without changing charts or data colours. */
+[data-theme] :is(.mcard, .server-card, .ztable, .uptime-summary) {
+  border-radius: var(--monitor-panel-radius);
+  border-color: var(--monitor-panel-line);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+[data-theme] .uptime-summary {
+  background: var(--card);
+}
+[data-theme] .fleet-panel {
+  border-color: var(--monitor-panel-line);
+}
+[data-theme] .fleet-panel-head {
+  background: var(--card);
+}
+[data-theme] :is(.fleet-panel-title-text, .globe-top-strip-title) {
+  font-weight: 600;
+  letter-spacing: normal;
+}
+[data-theme] .fleet-row-name {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: normal;
+}
+[data-theme] :is(.fleet-gauge-value, .fleet-rate, .fleet-panel-count) {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+}
+[data-theme] :is(.mcard-name, .server-card-title-link) {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: normal;
+  line-height: 22px;
+}
+[data-theme] .mcard-head {
+  gap: 10px;
+}
+[data-theme] .ztable th {
+  font-size: 12px;
+  font-weight: 600;
+}
+[data-theme] :is(.ztable tbody, .ztable-list) {
+  font-size: 13px;
+  line-height: 1.5;
+}
+[data-theme] .ztable-item {
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+[data-theme] :is(.uptime-verdict-title, .uptime-row-name) {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: normal;
+}
+[data-theme] .uptime-gauge-value {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Filters look and behave like one control family instead of separate gadgets. */
+[data-theme] .fleet-filter-bars :is(.home-group-tabs, .home-region-bar) {
+  border-radius: var(--monitor-panel-radius);
+  border-color: var(--monitor-panel-line);
+  background: var(--card);
+  box-shadow: none;
+}
+[data-theme] .fleet-filter-bars :is(.home-group-tabs button, .home-region-chip) {
+  min-height: 34px;
+  border-radius: var(--monitor-control-radius);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: normal;
+}
+[data-theme] .fleet-filter-bars :is(.home-group-tabs button, .home-region-chip)[data-active="true"] {
+  border-color: var(--border);
+  background: var(--muted);
+  color: var(--foreground);
+  box-shadow: none;
+}
+[data-theme] :is(.fleet-panel-search, .theme-manage-button) {
+  border-radius: var(--monitor-control-radius);
+  box-shadow: none;
+}
+[data-theme] .theme-manage-button:not(.is-primary) {
+  background: var(--card);
+  color: var(--foreground);
+}
+[data-theme] .theme-manage-button:hover {
+  transform: none;
+}
+
+@media (max-width: 639px) {
+  /* Only the mobile layout wrapper that owns the fleet drawer. Its old
+     fixed header estimate cannot account for the larger touch controls. */
+  [data-theme] main div:has(> [role="dialog"][aria-expanded]) {
+    height: calc(100dvh - var(--monitor-mobile-chrome, 9.5rem));
+  }
+  [data-theme] .app-header [data-mobile-header] > button {
+    flex: 1 1 auto;
+  }
+  [data-theme] .app-header [data-mobile-header] > div {
+    max-width: calc(100% - 64px);
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  [data-theme] .app-header [data-mobile-header] > button {
+    min-height: 44px;
+  }
+  [data-theme] .app-header [data-mobile-header] > div :is(button, a) {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  [data-theme] .app-header [data-mobile-toolbar] {
+    flex-wrap: wrap;
+  }
+  [data-theme] .app-header [data-mobile-toolbar] .view-tabs {
+    flex-basis: 100%;
+  }
+  [data-theme] .app-header [data-mobile-toolbar] .view-tabs [role="tab"] {
+    flex: 1 1 0;
+    min-width: 44px;
+    min-height: 44px;
+  }
+  [data-theme] .fleet-filter-bars :is(.home-group-tabs button, .home-region-chip) {
+    min-height: 44px;
+  }
+  [data-theme] .ztable-sort {
+    min-height: 44px;
+  }
+  [data-theme] .uptime-range button,
+  [data-theme] .uptime-icon-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+}

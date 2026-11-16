@@ -1,0 +1,50 @@
+/* Group tabs + region bar (home filters), shared by the card, matrix and table views. */
+@import "./tokens.css";
+@import "./home.base.css";
+
+.fleet-filter-bars {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+
+.fleet-filter-bars .home-group-tabs {
+  max-width: 100%;
+}
+
+.fleet-filter-bars .home-region-bar {
+  justify-self: stretch;
+}
+
+.fleet-filter-bars .home-region-bar {
+  margin-bottom: 0;
+}
+
+.home-group-tabs button,
+.home-region-chip {
+  cursor: pointer;
+}
+
+.home-group-tabs :focus-visible,
+.home-region-chips :focus-visible {
+  outline: 2px solid var(--ts-ring);
+  outline-offset: 2px;
+}
+
+/* Error state of the drag-reorder filter row. */
+.home-filter-order-error {
+  position: fixed;
+  z-index: 100;
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  padding: 10px 16px;
+  border: 1px solid var(--ts-border-strong);
+  border-radius: 12px;
+  background: var(--ts-surface-elev);
+  color: var(--ts-text-primary);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+  font-size: 12px;
+  transform: translateX(-50%);
+}
