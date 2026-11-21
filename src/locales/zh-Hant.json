@@ -8,6 +8,7 @@
     "all": "全部"
   },
   "label": {
+    "hardwareSpecs": "硬體與系統",
     "cpu": "CPU",
     "ram": "記憶體",
     "swap": "交換",
@@ -103,7 +104,8 @@
     "sortByCurrent": "目前順序",
     "sortByExpiryAsc": "到期時間（最近）",
     "sortByExpiryDesc": "到期時間（最遠）",
-    "sortByActivity": "依網路流量排序"
+    "sortByActivity": "依網路流量排序",
+    "sortShort": "排序"
   },
   "placeholder": {
     "searchNodes": "依名稱、群組、標籤或區域搜尋",
@@ -205,7 +207,10 @@
   },
   "fleet": {
     "title": "節點群",
-    "status": "節點群狀態"
+    "status": "節點群狀態",
+    "expandNodes": "展開節點",
+    "expandList": "展開清單",
+    "collapseNodes": "收合節點"
   },
   "assetStats": {
     "title": "計費彙總",
@@ -382,6 +387,12 @@
     "onlineCount": "線上 {{count}} 台",
     "totalCount": "總計 {{count}} 台",
     "totalBandwidth": "即時總頻寬",
+    "liveBandwidth": "即時總頻寬",
+    "onlineNodes": "線上節點",
+    "offlineCount": "{{count}} 台離線",
+    "noNodes": "暫無節點",
+    "showTrends": "展開趨勢",
+    "hideTrends": "收合趨勢",
     "uploadNet": "上行網路",
     "downloadNet": "下行網路",
     "upload": "上傳",

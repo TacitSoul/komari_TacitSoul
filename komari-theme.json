@@ -6,7 +6,7 @@
         "zh-TW": "Komari 監控主題：地球、卡片、矩陣、表格、可用性五種視圖，簡潔 / 深空兩套配色，統一的延遲與丟包展示，全部設定在主題內完成。",
         "en": "A Komari Monitor theme: globe, card, matrix, table and uptime views, clean / deepspace palettes, one latency and packet-loss model for every view, and an in-theme settings page."
     },
-    "version": "1.0.0",
+    "version": "1.0.1",
     "author": "Tacit Soul",
     "preview": "preview.png",
     "configuration": {

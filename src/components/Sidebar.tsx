@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { ArrowLeft, Cpu, HardDrive, MemoryStick, Network, BarChart3, ExternalLink, Server, Layers, Search, X, Activity, MapPin, Terminal, Clock, Gauge } from 'lucide-react';
+import { ArrowLeft, Cpu, HardDrive, MemoryStick, Network, BarChart3, ExternalLink, Server, Layers, Search, X, Activity, ListFilter, MapPin, Terminal, Clock, Gauge } from 'lucide-react';
 import { SystemIcon } from '@/lib/systemIcon';
 import { safeStorage } from '@/lib/safeStorage';
 import type { NodeWithStatus } from '@/services/api';
@@ -30,6 +30,7 @@ interface SidebarProps {
   onSelectNode: (uuid: string | null) => void;
   onViewCharts: (uuid: string, name: string) => void;
   className?: string;
+  mobileSheet?: boolean;
 }
 
 const statusColorMap: Record<'normal' | 'warning' | 'critical', string> = {
@@ -202,11 +203,13 @@ function NodeListView({
   loading,
   selectedNodeId,
   onSelectNode,
+  mobileSheet,
 }: {
   nodes: NodeWithStatus[];
   loading?: boolean;
   selectedNodeId: string | null;
   onSelectNode: (uuid: string) => void;
+  mobileSheet?: boolean;
 }) {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
@@ -339,6 +342,30 @@ function NodeListView({
     checkScroll();
   }, [sortedAndFiltered.length]);
 
+  const sortControl = !useVirtual && (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          onClick={() => setSortByActive(!sortByActive)}
+          aria-pressed={sortByActive}
+          aria-label={t('filter.sortByActivity')}
+          className={cn('fleet-panel-icon-btn fleet-panel-sort-btn', sortByActive && 'is-active')}
+        >
+          {mobileSheet ? (
+            <>
+              <ListFilter className="h-3.5 w-3.5 shrink-0" aria-hidden />
+              <span>{t('filter.sortShort')}</span>
+            </>
+          ) : <Activity className="h-3.5 w-3.5" aria-hidden />}
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" className="text-xs">
+        {t('filter.sortByActivity')} · {sortByActive ? 'ON' : 'OFF'}
+      </TooltipContent>
+    </Tooltip>
+  );
+
   return (
     <div className="flex flex-col h-full relative">
       {/* Header */}
@@ -360,38 +387,24 @@ function NodeListView({
             )}
           </span>
         </div>
-        <div className="fleet-panel-search">
-          <Search className="fleet-panel-search-icon" aria-hidden />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-            placeholder={t('placeholder.filterNodes')}
-            aria-label={t('placeholder.filterNodes')}
-          />
-          {searchQuery && (
-            <button type="button" className="fleet-panel-icon-btn" onClick={() => setSearchQuery('')} aria-label={t('action.clear')}>
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
-          {!useVirtual && (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={() => setSortByActive(!sortByActive)}
-                  aria-pressed={sortByActive}
-                  aria-label={t('filter.sortByActivity')}
-                  className={cn('fleet-panel-icon-btn', sortByActive && 'is-active')}
-                >
-                  <Activity className="h-3.5 w-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs">
-                {t('filter.sortByActivity')} · {sortByActive ? 'ON' : 'OFF'}
-              </TooltipContent>
-            </Tooltip>
-          )}
+        <div className="fleet-panel-filter-row">
+          <div className="fleet-panel-search">
+            <Search className="fleet-panel-search-icon" aria-hidden />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder={t('placeholder.filterNodes')}
+              aria-label={t('placeholder.filterNodes')}
+            />
+            {searchQuery && (
+              <button type="button" className="fleet-panel-icon-btn" onClick={() => setSearchQuery('')} aria-label={t('action.clear')}>
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+            {!mobileSheet && sortControl}
+          </div>
+          {mobileSheet && sortControl}
         </div>
         {searchQuery && (
           <div className="fleet-panel-matched">
@@ -910,7 +923,7 @@ function NodeDetailView({
   );
 }
 
-export function Sidebar({ nodes, loading, selectedNodeId, onSelectNode, onViewCharts, className }: SidebarProps) {
+export function Sidebar({ nodes, loading, selectedNodeId, onSelectNode, onViewCharts, className, mobileSheet }: SidebarProps) {
   const reduceMotion = useReducedMotion();
   const [view, setView] = useState<'list' | 'detail'>('list');
 
@@ -966,6 +979,7 @@ export function Sidebar({ nodes, loading, selectedNodeId, onSelectNode, onViewCh
               loading={loading}
               selectedNodeId={selectedNodeId}
               onSelectNode={handleSelectNode}
+              mobileSheet={mobileSheet}
             />
           </motion.div>
         ) : (

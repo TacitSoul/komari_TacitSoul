@@ -16,8 +16,8 @@ interface ViewTabsProps<T extends string> {
   onChange: (mode: T) => void;
   /** Prefetch on hover/focus — used to warm async chunks before navigation. */
   onHoverIntent?: (mode: T) => void;
-  /** Hide labels below this Tailwind breakpoint. Default: 'md' (icons-only on small viewports). */
-  labelBreakpoint?: 'sm' | 'md' | 'lg' | 'never';
+  /** Label visibility. Breakpoint values keep labels hidden below that width. */
+  labelBreakpoint?: 'sm' | 'md' | 'lg' | 'never' | 'always';
   className?: string;
 }
 
@@ -26,6 +26,7 @@ const breakpointShowClass: Record<NonNullable<ViewTabsProps<string>['labelBreakp
   md: 'hidden md:inline',
   lg: 'hidden lg:inline',
   never: 'hidden',
+  always: 'inline',
 };
 
 /**

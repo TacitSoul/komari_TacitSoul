@@ -535,6 +535,23 @@
   height: 9px;
 }
 
+.multi-ping-column-label {
+  display: none;
+}
+
+@media (width < 640px) {
+  .multi-ping-status.is-large .multi-ping-metric-column { row-gap: 9px; }
+  .multi-ping-status.is-large .multi-ping-column-label {
+    display: block;
+    color: var(--ts-text-secondary);
+    font-size: 11px;
+    font-weight: 650;
+    line-height: 1.2;
+    text-align: end;
+  }
+  .multi-ping-status.is-large .multi-ping-value { font-size: 12px; }
+}
+
 .server-health-block {
   display: flex;
   flex-direction: column;

@@ -5,6 +5,7 @@ import { TagPill } from '@/components/TagPill';
 import { OfflineNodeState } from '@/components/OfflineNodeState';
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { useAppConfig } from '@/hooks/useAppConfig';
+import { useMediaQuery } from '@/matrix/hooks/useMediaQuery';
 import { parseTagList } from '@/lib/parseTags';
 import { resourceUsage } from '@/lib/resourceUsage';
 import { SystemIcon } from '@/lib/systemIcon';
@@ -34,6 +35,7 @@ import {
   Calendar,
   Gauge,
   RefreshCw,
+  ChevronDown,
 } from 'lucide-react';
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
@@ -42,6 +44,7 @@ import { useTranslation } from 'react-i18next';
 export function NodeInfoPanel({ node }: { node: NodeWithStatus }) {
   const { t } = useTranslation();
   const appConfig = useAppConfig();
+  const mobile = useMediaQuery('(width < 640px)');
   const isOnline = node.status === 'online';
   const stats = isOnline ? node.stats : undefined;
   const cpuUsage = stats?.cpu?.usage ?? 0;
@@ -59,6 +62,81 @@ export function NodeInfoPanel({ node }: { node: NodeWithStatus }) {
   const loadRatio = stats ? stats.load.load1 / cores : 0;
   const loadStatusTone =
     loadRatio >= 1.5 ? 'text-destructive' : loadRatio >= 1 ? 'text-warning' : 'text-foreground';
+
+  const hardware = (node.cpu_name || node.gpu_name || node.os || node.arch) && (
+    <div className="network-stats-panel telemetry-panel overflow-hidden">
+      <div className="flex flex-col divide-y divide-border/20">
+        {(node.cpu_name || node.gpu_name) && (
+          <div className="flex flex-col divide-y divide-border/20 sm:flex-row sm:divide-x sm:divide-y-0">
+            {node.cpu_name && (
+              <OverflowTooltip
+                content={`${node.cpu_name} (${node.cpu_cores}C)`}
+                contentClassName="max-w-xs text-xs font-mono"
+              >
+                <div className="stat-section flex min-w-0 flex-1 flex-col gap-1.5 p-3 sm:p-4 cursor-default">
+                  <div className="flex items-center gap-1.5">
+                    <span className="stat-chip stat-chip--cpu"><SystemIcon kind="cpu" value={node.cpu_name} className="h-3 w-3" /></span>
+                    <span className="type-hud-label">{t('label.cpu')}</span>
+                  </div>
+                  <div className="type-spec-value">{node.cpu_name} ({node.cpu_cores}C)</div>
+                </div>
+              </OverflowTooltip>
+            )}
+            {node.gpu_name && (
+              <OverflowTooltip
+                content={node.gpu_name}
+                contentClassName="max-w-xs text-xs font-mono"
+              >
+                <div className="stat-section flex min-w-0 flex-1 flex-col gap-1.5 p-3 sm:p-4 cursor-default">
+                  <div className="flex items-center gap-1.5">
+                    <span className="stat-chip stat-chip--gpu"><SystemIcon kind="gpu" value={node.gpu_name} className="h-3 w-3" /></span>
+                    <span className="type-hud-label">{t('label.gpu')}</span>
+                  </div>
+                  <div className="type-spec-value">{node.gpu_name}</div>
+                </div>
+              </OverflowTooltip>
+            )}
+          </div>
+        )}
+        {(node.os || node.arch) && (
+          <div className="flex flex-col divide-y divide-border/20 sm:flex-row sm:divide-x sm:divide-y-0">
+            {node.os && (
+              <OverflowTooltip
+                content={`${node.os}${node.kernel_version ? `\n${t('label.kernel')}: ${node.kernel_version}` : ''}`}
+                contentClassName="max-w-xs text-xs font-mono whitespace-pre-line"
+              >
+                <div className="stat-section flex min-w-0 flex-1 flex-col gap-1.5 p-3 sm:p-4 cursor-default">
+                  <div className="flex items-center gap-1.5">
+                    <span className="stat-chip stat-chip--system"><SystemIcon kind="os" value={node.os} className="h-3 w-3" /></span>
+                    <span className="type-hud-label">{t('label.system')}</span>
+                  </div>
+                  <div className="type-spec-value">
+                    {node.os}{node.kernel_version ? ` · ${node.kernel_version}` : ''}
+                  </div>
+                </div>
+              </OverflowTooltip>
+            )}
+            {node.arch && (
+              <OverflowTooltip
+                content={`${node.arch}${node.virtualization ? ` · ${node.virtualization}` : ''}`}
+                contentClassName="max-w-xs text-xs font-mono"
+              >
+                <div className="stat-section flex min-w-0 flex-1 flex-col gap-1.5 p-3 sm:p-4 cursor-default">
+                  <div className="flex items-center gap-1.5">
+                    <span className="stat-chip stat-chip--system"><SystemIcon kind="arch" value={node.arch} className="h-3 w-3" /></span>
+                    <span className="type-hud-label">{t('label.arch')}</span>
+                  </div>
+                  <div className="type-spec-value">
+                    {node.arch}{node.virtualization ? ` · ${node.virtualization}` : ''}
+                  </div>
+                </div>
+              </OverflowTooltip>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <div className="node-card-hud node-info-panel rounded-lg border border-border/50 bg-card/80 backdrop-blur-xl p-4 sm:p-5 hud-corners relative overflow-hidden">
@@ -86,87 +164,15 @@ export function NodeInfoPanel({ node }: { node: NodeWithStatus }) {
 
       {appConfig.isLoggedIn && <RemarkNote text={node.remark} variant="private" />}
 
-      {(node.cpu_name || node.gpu_name || node.os || node.arch) && (
-        <div className="network-stats-panel telemetry-panel overflow-hidden">
-          <div className="flex flex-col divide-y divide-border/20">
-            {(node.cpu_name || node.gpu_name) && (
-              <div className="flex flex-col divide-y divide-border/20 sm:flex-row sm:divide-x sm:divide-y-0">
-                {node.cpu_name && (
-                  <OverflowTooltip
-                    content={`${node.cpu_name} (${node.cpu_cores}C)`}
-                    contentClassName="max-w-xs text-xs font-mono"
-                  >
-                    <div className="stat-section flex min-w-0 flex-1 flex-col gap-1.5 p-3 sm:p-4 cursor-default">
-                      <div className="flex items-center gap-1.5">
-                        <span className="stat-chip stat-chip--cpu"><SystemIcon kind="cpu" value={node.cpu_name} className="h-3 w-3" /></span>
-                        <span className="type-hud-label">{t('label.cpu')}</span>
-                      </div>
-                      <div className="type-spec-value">{node.cpu_name} ({node.cpu_cores}C)</div>
-                    </div>
-                  </OverflowTooltip>
-                )}
-                {node.gpu_name && (
-                  <OverflowTooltip
-                    content={node.gpu_name}
-                    contentClassName="max-w-xs text-xs font-mono"
-                  >
-                    <div className="stat-section flex min-w-0 flex-1 flex-col gap-1.5 p-3 sm:p-4 cursor-default">
-                      <div className="flex items-center gap-1.5">
-                        <span className="stat-chip stat-chip--gpu"><SystemIcon kind="gpu" value={node.gpu_name} className="h-3 w-3" /></span>
-                        <span className="type-hud-label">{t('label.gpu')}</span>
-                      </div>
-                      <div className="type-spec-value">{node.gpu_name}</div>
-                    </div>
-                  </OverflowTooltip>
-                )}
-              </div>
-            )}
-            {(node.os || node.arch) && (
-              <div className="flex flex-col divide-y divide-border/20 sm:flex-row sm:divide-x sm:divide-y-0">
-                {node.os && (
-                  <OverflowTooltip
-                    content={`${node.os}${node.kernel_version ? `\n${t('label.kernel')}: ${node.kernel_version}` : ''}`}
-                    contentClassName="max-w-xs text-xs font-mono whitespace-pre-line"
-                  >
-                    <div className="stat-section flex min-w-0 flex-1 flex-col gap-1.5 p-3 sm:p-4 cursor-default">
-                      <div className="flex items-center gap-1.5">
-                        <span className="stat-chip stat-chip--system"><SystemIcon kind="os" value={node.os} className="h-3 w-3" /></span>
-                        <span className="type-hud-label">{t('label.system')}</span>
-                      </div>
-                      <div className="type-spec-value">
-                        {node.os}{node.kernel_version ? ` · ${node.kernel_version}` : ''}
-                      </div>
-                    </div>
-                  </OverflowTooltip>
-                )}
-                {node.arch && (
-                  <OverflowTooltip
-                    content={`${node.arch}${node.virtualization ? ` · ${node.virtualization}` : ''}`}
-                    contentClassName="max-w-xs text-xs font-mono"
-                  >
-                    <div className="stat-section flex min-w-0 flex-1 flex-col gap-1.5 p-3 sm:p-4 cursor-default">
-                      <div className="flex items-center gap-1.5">
-                        <span className="stat-chip stat-chip--system"><SystemIcon kind="arch" value={node.arch} className="h-3 w-3" /></span>
-                        <span className="type-hud-label">{t('label.arch')}</span>
-                      </div>
-                      <div className="type-spec-value">
-                        {node.arch}{node.virtualization ? ` · ${node.virtualization}` : ''}
-                      </div>
-                    </div>
-                  </OverflowTooltip>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      {!mobile && hardware}
 
       {stats ? (
         <>
           <div className="network-stats-panel telemetry-panel overflow-hidden">
-            <div className="grid grid-cols-3 divide-x divide-border/20">
+            <div className="node-detail-gauges grid grid-cols-3 divide-x divide-border/20">
               <CircularGauge
                 channel="cpu"
+                size={mobile ? 62 : undefined}
                 label={t('label.cpu')}
                 value={cpuUsage}
                 icon={<Cpu className="h-3 w-3" />}
@@ -175,6 +181,7 @@ export function NodeInfoPanel({ node }: { node: NodeWithStatus }) {
               />
               <CircularGauge
                 channel="ram"
+                size={mobile ? 62 : undefined}
                 label={t('label.ram')}
                 value={ramUsage}
                 icon={<MemoryStick className="h-3 w-3" />}
@@ -184,6 +191,7 @@ export function NodeInfoPanel({ node }: { node: NodeWithStatus }) {
               />
               <CircularGauge
                 channel="disk"
+                size={mobile ? 62 : undefined}
                 label={t('label.disk')}
                 value={diskUsage}
                 icon={<HardDrive className="h-3 w-3" />}
@@ -192,7 +200,7 @@ export function NodeInfoPanel({ node }: { node: NodeWithStatus }) {
               />
             </div>
 
-            <div className="grid grid-cols-1 divide-y divide-border/20 border-t border-border/20 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+            <div className="node-detail-secondary grid grid-cols-1 divide-y divide-border/20 border-t border-border/20 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
               <div className="stat-section flex flex-col gap-1.5 p-3 sm:p-4" data-accent="network">
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -221,7 +229,7 @@ export function NodeInfoPanel({ node }: { node: NodeWithStatus }) {
                   </div>
                 </div>
                 {appConfig.isLoggedIn && (
-                  <div className="flex items-center gap-2 mt-auto pt-1.5 border-t border-border/15">
+                  <div className="node-detail-network-counts flex items-center gap-2 mt-auto pt-1.5 border-t border-border/15">
                     <span className="type-hud-label-sm">{t('label.tcp')}</span>
                     <span className="text-xxs font-metric font-bold tabular-nums text-chart-5">{stats.connections.tcp}</span>
                     <span className="text-xxs text-muted-foreground/20">|</span>
@@ -235,13 +243,13 @@ export function NodeInfoPanel({ node }: { node: NodeWithStatus }) {
                   <span className="stat-chip stat-chip--load"><Activity className="h-3 w-3" /></span>
                   <span className="type-hud-label">{t('label.load')}</span>
                 </div>
-                <div className={cn('type-metric-hero tabular-nums', loadStatusTone)}>
+                <div className={cn('node-detail-load-hero type-metric-hero tabular-nums', loadStatusTone)}>
                   {stats.load.load1.toFixed(2)}
                 </div>
-                <div className="grid grid-cols-3 gap-1 mt-auto pt-1.5 border-t border-border/15">
+                <div className="node-detail-load-breakdown grid grid-cols-3 gap-1 mt-auto pt-1.5 border-t border-border/15">
                   <div>
                     <div className="type-hud-label-sm">{t('label.load1m')}</div>
-                    <div className="type-metric-md tabular-nums">{stats.load.load1.toFixed(2)}</div>
+                    <div className={cn('type-metric-md tabular-nums', mobile && loadStatusTone)}>{stats.load.load1.toFixed(2)}</div>
                   </div>
                   <div>
                     <div className="type-hud-label-sm">{t('label.load5m')}</div>
@@ -405,6 +413,15 @@ export function NodeInfoPanel({ node }: { node: NodeWithStatus }) {
             variant="detail"
           />
         )
+      )}
+      {mobile && hardware && (
+        <details key={node.uuid} className="node-hardware-details">
+          <summary>
+            {t('label.hardwareSpecs')}
+            <ChevronDown className="h-4 w-4 shrink-0" aria-hidden />
+          </summary>
+          {hardware}
+        </details>
       )}
       </div>
     </div>

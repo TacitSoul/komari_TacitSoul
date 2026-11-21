@@ -210,7 +210,8 @@ export function AppHeader({ siteName, siteDescription, logoSrc, hasCriticalNode 
               value={viewMode}
               onChange={handleViewTabChange}
               onHoverIntent={handleViewTabHover}
-              labelBreakpoint="md"
+              labelBreakpoint="sm"
+              className="header-desktop-view-tabs"
             />
             <HeaderUtilityControls layout="desktop" />
           </div>
@@ -235,7 +236,7 @@ export function AppHeader({ siteName, siteDescription, logoSrc, hasCriticalNode 
             value={viewMode}
             onChange={handleViewTabChange}
             onHoverIntent={handleViewTabHover}
-            labelBreakpoint="never"
+            labelBreakpoint="always"
             className="min-w-0 max-w-full flex-1 overflow-x-auto scrollbar-none"
           />
           {hasCriticalNode && <CriticalLoadBanner compact />}

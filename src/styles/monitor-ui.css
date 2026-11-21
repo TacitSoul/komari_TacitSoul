@@ -54,17 +54,59 @@ pre, code, kbd, samp {
 }
 [data-theme] .app-header .view-tabs {
   border-radius: var(--monitor-control-radius);
-  background: var(--muted);
-  border-color: var(--monitor-panel-line);
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
 }
 [data-theme] .app-header .view-tabs [role="tab"] {
   font-size: 12px;
   font-weight: 600;
   letter-spacing: normal;
   text-transform: none;
+  color: var(--muted-foreground);
 }
 [data-theme] .app-header .view-tabs-indicator {
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.06);
+  visibility: hidden;
+}
+[data-theme] .app-header .view-tabs [role="tab"] > svg {
+  color: currentColor;
+  opacity: .76;
+}
+[data-theme] .app-header .view-tabs [role="tab"]:hover,
+[data-theme] .app-header .view-tabs [role="tab"][aria-selected="true"] {
+  color: var(--foreground);
+}
+[data-theme] .app-header .view-tabs [role="tab"][aria-selected="true"] > svg {
+  opacity: 1;
+}
+[data-theme] .app-header .view-tabs [role="tab"][aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  inset-block-end: 1px;
+  inset-inline-start: 50%;
+  width: 22px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--primary);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+@media (forced-colors: active) {
+  [data-theme] .app-header .view-tabs [role="tab"][aria-selected="true"]::after {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+}
+
+/* At compact desktop widths the words are more distinct than the icons. */
+@media (640px <= width < 768px) {
+  [data-theme] .app-header .header-desktop-view-tabs [role="tab"] {
+    padding-inline: 6px;
+    white-space: nowrap;
+  }
+  [data-theme] .app-header .header-desktop-view-tabs [role="tab"] > svg {
+    display: none;
+  }
 }
 
 /* Align the five content surfaces without changing charts or data colours. */
@@ -160,10 +202,10 @@ pre, code, kbd, samp {
   transform: none;
 }
 
-@media (max-width: 639px) {
+@media (width < 640px) {
   /* Only the mobile layout wrapper that owns the fleet drawer. Its old
      fixed header estimate cannot account for the larger touch controls. */
-  [data-theme] main div:has(> [role="dialog"][aria-expanded]) {
+  [data-theme] main .globe-monitor-layout {
     height: calc(100dvh - var(--monitor-mobile-chrome, 9.5rem));
   }
   [data-theme] .app-header [data-mobile-header] > button {
@@ -189,8 +231,60 @@ pre, code, kbd, samp {
   }
   [data-theme] .app-header [data-mobile-toolbar] .view-tabs [role="tab"] {
     flex: 1 1 0;
+    flex-direction: column;
+    gap: 2px;
     min-width: 44px;
     min-height: 44px;
+    padding-inline: 2px;
+    font-size: 11px;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+  [data-theme] .fleet-filter-bars {
+    min-width: 0;
+    gap: 5px;
+  }
+  [data-theme] .fleet-filter-bars .home-group-tabs {
+    width: 100%;
+    padding: 2px;
+    border-radius: 10px;
+  }
+  [data-theme] .fleet-filter-bars .home-region-bar {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  [data-theme] .fleet-filter-bars .home-region-chips {
+    gap: 5px;
+  }
+  [data-theme] .fleet-filter-bars .home-region-chip {
+    flex: 1 0 auto;
+    min-width: 60px;
+    max-width: 104px;
+    justify-content: center;
+    gap: 2px;
+    padding-inline: 3px;
+  }
+  /* The Flag component reserves 22px by default; constrain only this filter slot. */
+  [data-theme] .fleet-filter-bars .home-region-chip > :first-child {
+    max-inline-size: 16px;
+  }
+  [data-theme] .fleet-filter-bars .home-region-chip-code {
+    font-size: 11px;
+    letter-spacing: normal;
+  }
+  [data-theme] .fleet-filter-bars .home-region-chip-count {
+    min-width: 13px;
+    padding-inline: 2px;
+  }
+  [data-theme] .fleet-filter-bars :is(.home-group-tabs button, .home-region-chip)[data-active="true"] {
+    background: color-mix(in oklch, var(--primary) 9%, var(--card));
+    color: var(--primary);
+  }
+  [data-theme] .fleet-filter-bars :is(.home-group-tabs button, .home-region-chip):focus-visible {
+    outline-offset: -2px;
   }
   [data-theme] .fleet-filter-bars :is(.home-group-tabs button, .home-region-chip) {
     min-height: 44px;

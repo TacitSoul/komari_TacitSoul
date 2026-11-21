@@ -1,0 +1,68 @@
+/* Reposition the mounted globe, retaining the original canvas dimensions. */
+@media (width < 1024px) {
+  .globe-monitor-layout {
+    --fleet-globe-lift: min(52px, 7dvh);
+  }
+  .globe-monitor-layout :is(.dot-globe-slot, .earth-tooltip.is-docked) {
+    transition: translate .2s ease-out;
+  }
+  .globe-monitor-layout:has(> [data-fleet-sheet="half"]) .dot-globe-slot {
+    translate: 0 calc(0px - var(--fleet-globe-lift));
+  }
+  /* An anchored popover moves with its marker; a docked one stays in view. */
+  .globe-monitor-layout:has(> [data-fleet-sheet="half"]) .earth-tooltip.is-docked {
+    translate: 0 var(--fleet-globe-lift);
+  }
+  .globe-monitor-layout:has(> [data-fleet-sheet="open"]) > .globe-monitor-column {
+    visibility: hidden;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .globe-monitor-layout :is(.dot-globe-slot, .earth-tooltip.is-docked) {
+      transition: none;
+    }
+  }
+}
+
+[data-fleet-sheet="half"] .fleet-panel-head {
+  padding-block: 6px;
+}
+[data-fleet-sheet="half"] .fleet-panel-title,
+[data-fleet-compact] .fleet-panel-title {
+  display: none;
+}
+[data-fleet-compact] .fleet-panel-head {
+  padding-block: 4px;
+}
+[data-fleet-compact][data-fleet-sheet="open"] {
+  /* Scroll the handle too, so it doesn't take space from the sort target. */
+  overflow-y: auto;
+}
+[data-fleet-compact][data-fleet-sheet="open"] > .fleet-sheet-body {
+  min-block-size: 160px;
+  overflow: visible;
+}
+[data-fleet-sheet] .fleet-panel-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+[data-fleet-sheet] .fleet-panel-search {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  min-block-size: 44px;
+}
+[data-fleet-sheet] .fleet-panel-sort-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  inline-size: auto;
+  block-size: 44px;
+  min-inline-size: 44px;
+  padding-inline: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--monitor-control-radius);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}

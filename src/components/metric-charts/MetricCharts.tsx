@@ -20,7 +20,6 @@ import {
 import {
   chartColors,
   gridStrokeColor,
-  labelFormatter,
   type ChartDataPoint,
   type TaskInfo,
   type ChartDataRow,
@@ -70,7 +69,7 @@ export function CpuUsageLineChart({
   emptyContent,
 }: BaseProps & { showReferenceLine?: boolean }) {
   const { t } = useTranslation();
-  const { margin, xAxisProps, yPctProps } = useMetricChartAxes(mode, chartData.length, isMobile);
+  const { margin, xAxisProps, yPctProps, labelFormatter } = useMetricChartAxes(mode, chartData.length, isMobile);
   const showLegend = mode === 'detail';
   const cfg = { cpu: { label: t('label.cpu'), color: chartColors[0] } };
 
@@ -115,7 +114,7 @@ export function SystemLoadLineChart({
   emptyContent,
 }: BaseProps) {
   const { t } = useTranslation();
-  const { margin, xAxisProps, yPlainProps } = useMetricChartAxes(mode, chartData.length, isMobile);
+  const { margin, xAxisProps, yPlainProps, labelFormatter } = useMetricChartAxes(mode, chartData.length, isMobile);
   const showLegend = mode === 'detail';
   const cfg = { load: { label: t('label.load'), color: chartColors[1] } };
 
@@ -159,7 +158,7 @@ export function MemoryLineChart({
 }: BaseProps & { showReferenceLine?: boolean }) {
   const { t } = useTranslation();
   const [hidden, onLegendClick] = useSeriesLegendToggle();
-  const { margin, xAxisProps, yPctProps } = useMetricChartAxes(mode, chartData.length, isMobile);
+  const { margin, xAxisProps, yPctProps, labelFormatter } = useMetricChartAxes(mode, chartData.length, isMobile);
   const cfg = {
     ram: { label: t('label.ram'), color: chartColors[2] },
     swap: { label: t('label.swap'), color: chartColors[8] },
@@ -222,7 +221,7 @@ export function DiskUsageLineChart({
   emptyContent,
 }: BaseProps & { showReferenceLine?: boolean }) {
   const { t } = useTranslation();
-  const { margin, xAxisProps, yPctProps } = useMetricChartAxes(mode, chartData.length, isMobile);
+  const { margin, xAxisProps, yPctProps, labelFormatter } = useMetricChartAxes(mode, chartData.length, isMobile);
   const showLegend = mode === 'detail';
   const cfg = { disk: { label: t('label.disk'), color: chartColors[3] } };
 
@@ -260,7 +259,7 @@ export function ConnectionsLineChart({
 }: BaseProps) {
   const { t } = useTranslation();
   const [hidden, onLegendClick] = useSeriesLegendToggle();
-  const { margin, xAxisProps, yPlainProps } = useMetricChartAxes(mode, chartData.length, isMobile);
+  const { margin, xAxisProps, yPlainProps, labelFormatter } = useMetricChartAxes(mode, chartData.length, isMobile);
   const cfg = {
     connections: { label: t('label.tcp'), color: chartColors[4] },
     connections_udp: { label: t('label.udp'), color: chartColors[5] },
@@ -314,7 +313,7 @@ export function ProcessLineChart({
   emptyContent,
 }: BaseProps) {
   const { t } = useTranslation();
-  const { margin, xAxisProps, yPlainProps } = useMetricChartAxes(mode, chartData.length, isMobile);
+  const { margin, xAxisProps, yPlainProps, labelFormatter } = useMetricChartAxes(mode, chartData.length, isMobile);
   const showLegend = mode === 'detail';
   const cfg = { process: { label: t('chart.process'), color: chartColors[8] } };
 
@@ -357,7 +356,7 @@ export function NetworkTrafficAreaChart({
 }: BaseProps) {
   const { t } = useTranslation();
   const [hidden, onLegendClick] = useSeriesLegendToggle();
-  const { margin, xAxisProps, yAxisConfig } = useMetricChartAxes(mode, chartData.length, isMobile);
+  const { margin, xAxisProps, yAxisConfig, labelFormatter } = useMetricChartAxes(mode, chartData.length, isMobile);
   const cfg = {
     network_in: { label: t('label.in'), color: chartColors[6] },
     network_out: { label: t('label.out'), color: chartColors[7] },
@@ -459,7 +458,7 @@ export function PingLatencyLineChart({
   emptyContent?: ReactNode;
 }) {
   const { t } = useTranslation();
-  const { margin, xAxisProps, yAxisConfig } = useMetricChartAxes(mode, pingChartData.length, isMobile);
+  const { margin, xAxisProps, yAxisConfig, labelFormatter } = useMetricChartAxes(mode, pingChartData.length, isMobile);
 
   const pingConfig: Record<string, { label: string; color: string }> = {};
   tasks.forEach((tk, i) => {

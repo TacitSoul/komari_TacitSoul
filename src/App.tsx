@@ -39,7 +39,7 @@ function App() {
 
   const { themeConfig } = appConfig;
   // Keep the page logo in sync with Komari's administrator-uploaded favicon.
-  const logoSrc = '/favicon.ico?v=1.0.0';
+  const logoSrc = '/favicon.ico?v=1.0.1';
 
   useEffect(() => {
     if (!appConfig.loaded) return;

@@ -1,7 +1,7 @@
 {
   "name": "komari-theme-tacit-soul",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Komari Monitor theme: globe, matrix, card, table and uptime views.",
   "license": "MIT",
   "author": "Tacit Soul",

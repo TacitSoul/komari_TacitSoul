@@ -1,0 +1,59 @@
+@media (width < 640px) {
+  .node-detail-page .node-info-panel { padding: 10px; }
+  .node-detail-gauges > div { min-inline-size: 0; padding: 8px 6px; }
+  .node-detail-gauges .circular-gauge .type-metric-hero { font-size: 16px; line-height: 1.2; }
+  .node-detail-secondary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "network uptime"
+      "load load";
+  }
+  .node-detail-secondary > .stat-section { min-inline-size: 0; padding: 8px; border-block: 0; }
+  .node-detail-secondary > [data-accent="network"] {
+    grid-area: network;
+    border-inline-end: 1px solid color-mix(in oklch, var(--border) 45%, transparent);
+  }
+  .node-detail-secondary .node-detail-network-counts { flex-wrap: wrap; overflow-wrap: anywhere; }
+  .node-detail-secondary > [data-accent="uptime"] { grid-area: uptime; overflow-wrap: anywhere; }
+  .node-detail-secondary [data-accent="uptime"] .type-metric-hero { font-size: 14px; }
+  .node-detail-secondary > [data-accent="load"] {
+    grid-area: load;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    border-block-start: 1px solid color-mix(in oklch, var(--border) 45%, transparent);
+  }
+  .node-detail-load-hero { display: none; } /* The 1-min value is already in the load breakdown. */
+  .node-detail-secondary .node-detail-load-breakdown {
+    min-inline-size: 0;
+    margin-block-start: 0;
+    padding: 0;
+    border: 0;
+    overflow-wrap: anywhere;
+  }
+  .node-detail-time-range { padding-block: 4px; }
+  .node-detail-time-range button { min-inline-size: 44px; min-block-size: 44px; }
+  /* The headers and chart bodies already provide their own internal padding. */
+  .node-detail-page .chart-card-hud { padding-block: 0; row-gap: 0; }
+}
+
+.node-hardware-details {
+  border: 1px solid var(--monitor-panel-line);
+  border-radius: var(--monitor-control-radius);
+}
+.node-hardware-details > summary {
+  display: flex;
+  min-block-size: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-inline: 10px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+.node-hardware-details > summary::-webkit-details-marker { display: none; }
+.node-hardware-details > summary:focus-visible { outline: 2px solid var(--ring); outline-offset: -3px; }
+.node-hardware-details[open] > summary svg { transform: rotate(180deg); }

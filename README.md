@@ -2,7 +2,7 @@
 
 Tacit Soul 是 [Komari](https://github.com/komari-monitor/komari) 的第三方监控主题，提供节点资源监控、网络流量展示和可用性统计，支持桌面与移动端访问。
 
-当前版本：`v1.0.0` · 适配版本：Komari `1.6.1` · 许可证：[MIT](LICENSE)
+当前版本：`v1.0.1` · 适配版本：Komari `1.6.1` · 许可证：[MIT](LICENSE)
 
 [在线演示](https://agent.52dh.com.cn/) · [下载主题](https://github.com/TacitSoul/komari_TacitSoul/releases) · [界面预览](#效果展示)
 
@@ -46,7 +46,7 @@ Tacit Soul 是 [Komari](https://github.com/komari-monitor/komari) 的第三方�
 
 ## 安装
 
-1. 在 [Releases](https://github.com/TacitSoul/komari_TacitSoul/releases) 下载 `TacitSoul-v1.0.0.zip`。
+1. 在 [Releases](https://github.com/TacitSoul/komari_TacitSoul/releases) 下载 `TacitSoul-v1.0.1.zip`。
 2. 进入 Komari 后台的主题管理页面，上传安装包并启用。
 3. 通过后台菜单中的 **Tacit Soul 主题设置** 调整视图、配色及显示选项。
 

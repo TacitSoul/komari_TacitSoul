@@ -1,12 +1,36 @@
 import { useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import { labelFormatter as browserLabelFormatter } from '@/lib/chart-utils';
 
 export type MetricChartLayoutMode = 'modal' | 'detail';
+
+export function createMetricChartTimeFormatter(language?: string, withDate = false) {
+  const isChinese = /^zh(?:-|$)/i.test(language ?? '');
+  const locale = isChinese ? (/(?:Hant|TW|HK|MO)(?:-|$)/i.test(language ?? '') ? 'zh-TW' : 'zh-CN') : undefined;
+  const options: Intl.DateTimeFormatOptions = {
+    hour: '2-digit',
+    minute: '2-digit',
+    ...(isChinese && { hourCycle: 'h23' as const }),
+    ...(withDate && { month: '2-digit' as const, day: '2-digit' as const, second: '2-digit' as const }),
+  };
+  return (value: number | string) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return '';
+    // Resolve the local timezone at formatting time, not when this closure is created.
+    return withDate ? date.toLocaleString(locale, options) : date.toLocaleTimeString(locale, options);
+  };
+}
 
 export function useMetricChartAxes(
   mode: MetricChartLayoutMode,
   chartDataLength: number,
   isMobile: boolean,
 ) {
+  const { i18n } = useTranslation();
+  const language = mode === 'detail' ? i18n.resolvedLanguage ?? i18n.language : undefined;
+  const formatTime = useMemo(() => createMetricChartTimeFormatter(language), [language]);
+  const labelFormatter = useMemo(() => mode === 'detail'
+    ? createMetricChartTimeFormatter(language, true) : browserLabelFormatter, [language, mode]);
   const margin = useMemo(() => {
     if (mode === 'modal') {
       return { top: 8, right: 8, bottom: 4, left: 8 };
@@ -19,24 +43,15 @@ export function useMetricChartAxes(
     };
   }, [mode, isMobile]);
 
-  const timeFormatterModal = useCallback((value: string) => {
-    return new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }, []);
-
   const timeFormatterDetail = useCallback(
     (value: number | string, index: number) => {
       if (!chartDataLength) return '';
-      const total = chartDataLength;
-      if (isMobile) {
-        if (index === 0 || index === total - 1) {
-          return new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        }
-      } else if (index === 0 || index === total - 1 || index === Math.floor(total / 2)) {
-        return new Date(value).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      if (index === 0 || index === chartDataLength - 1 || (!isMobile && index === Math.floor(chartDataLength / 2))) {
+        return formatTime(value);
       }
       return '';
     },
-    [chartDataLength, isMobile],
+    [chartDataLength, formatTime, isMobile],
   );
 
   const xAxisProps = useMemo(() => {
@@ -45,7 +60,7 @@ export function useMetricChartAxes(
         dataKey: 'time' as const,
         tickLine: false,
         axisLine: false,
-        tickFormatter: timeFormatterModal,
+        tickFormatter: formatTime,
         interval: 'preserveStartEnd' as const,
         minTickGap: 60,
         tick: { fontSize: 10 },
@@ -65,7 +80,7 @@ export function useMetricChartAxes(
       tick: { fontSize: tickFont },
       height,
     };
-  }, [mode, isMobile, timeFormatterModal, timeFormatterDetail]);
+  }, [mode, isMobile, formatTime, timeFormatterDetail]);
 
   const yAxisConfig = useMemo(
     () => ({
@@ -109,5 +124,5 @@ export function useMetricChartAxes(
     };
   }, [mode, yAxisConfig]);
 
-  return { margin, xAxisProps, yPctProps, yPlainProps, yAxisConfig };
+  return { margin, xAxisProps, yPctProps, yPlainProps, yAxisConfig, labelFormatter };
 }

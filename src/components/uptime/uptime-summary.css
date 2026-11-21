@@ -450,6 +450,11 @@
   font-variant-numeric: tabular-nums;
 }
 
+[data-theme="deepspace"] .uptime-fleet-axis {
+  color: color-mix(in oklch, var(--muted-foreground) 65%, var(--foreground));
+  font-size: 12px;
+}
+
 [data-theme="deepspace"] .uptime-metric dd span {
   color: color-mix(in oklch, var(--foreground) 62%, transparent);
 }

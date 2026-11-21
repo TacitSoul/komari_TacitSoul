@@ -14,6 +14,7 @@ import { useIsMobile } from '@/hooks/useIsMobile';
 import { cn } from '@/lib/utils';
 import { safeStorage } from '@/lib/safeStorage';
 import type { NodeWithStatus } from '@/services/api';
+import './fleet/mobile-fleet-layout.css';
 
 interface GlobeViewProps {
   nodes: NodeWithStatus[];
@@ -42,8 +43,9 @@ export function GlobeView({ nodes, loading = false, onViewCharts, hubNodeUuid = 
   const { themeConfig, loaded: configLoaded } = useAppConfig();
   const isMobile = useIsMobile(1024); // < lg → mobile/tablet portrait
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  /** Where the current selection came from — globe taps keep the phone sheet collapsed. */
+  /** Globe taps show a region card without selecting a row in the mobile roster. */
   const [selectedFromGlobe, setSelectedFromGlobe] = useState(false);
+  const mobileSelectedNodeId = selectedFromGlobe ? null : selectedNodeId;
   const clearSelection = useCallback(() => setSelectedNodeId(null), []);
   const selectFromGlobe = useCallback((uuid: string) => {
     setSelectedFromGlobe(true);
@@ -106,14 +108,14 @@ export function GlobeView({ nodes, loading = false, onViewCharts, hubNodeUuid = 
     // (~40px). Desktop preserves the original 100vh-based formula.
     <div
       className={cn(
-        'relative z-10 flex flex-col lg:flex-row gap-4 lg:gap-5 w-full',
+        'globe-monitor-layout relative z-10 flex flex-col lg:flex-row gap-4 lg:gap-5 w-full',
         'h-[calc(100dvh-9.5rem)] sm:h-[calc(100dvh-10.5rem)] lg:h-[calc(100vh-theme(spacing.12)-theme(spacing.9)-3rem)]',
       )}
     >
       {/* Globe column — Top strip + Stage + Bottom feed */}
       {/* `min-w-0` is critical: stops nowrap children (top strip, telemetry feed)
           from inflating this flex item's intrinsic width and breaking layout. */}
-      <div className="flex-1 min-w-0 flex flex-col min-h-0 relative hud-corners z-30">
+      <div className="globe-monitor-column flex-1 min-w-0 flex flex-col min-h-0 relative hud-corners z-30">
         <span className="corner-bottom" />
 
         {/* ① Top KPI Strip */}
@@ -229,14 +231,15 @@ export function GlobeView({ nodes, loading = false, onViewCharts, hubNodeUuid = 
           which is `lg:hidden` itself). The Sidebar below is reused verbatim
           inside the sheet, so the list/detail logic stays in one place. */}
       {isMobile && (
-        <MobileFleetSheet nodes={nodes} selectedNodeId={selectedNodeId} autoExpandOnSelect={!selectedFromGlobe}>
+        <MobileFleetSheet nodes={nodes} selectedNodeId={mobileSelectedNodeId} onClearSelection={clearSelection}>
           <Sidebar
             nodes={nodes}
             loading={loading}
-            selectedNodeId={selectedNodeId}
+            selectedNodeId={mobileSelectedNodeId}
             onSelectNode={selectFromList}
             onViewCharts={onViewCharts}
             className="h-full"
+            mobileSheet
           />
         </MobileFleetSheet>
       )}

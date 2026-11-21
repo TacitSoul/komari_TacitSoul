@@ -147,11 +147,13 @@ const MultiPingMetricColumn = memo(function MultiPingMetricColumn({
   density: MultiPingStatusDensity;
   redrawKey: string;
 }) {
+  const label = metric === "latency" ? tsText("延迟") : tsText("丢包");
   return (
     <div
       className="multi-ping-metric-column"
-      aria-label={metric === "latency" ? tsText("延迟") : tsText("丢包")}
+      aria-label={label}
     >
+      {density === "large" && <span className="multi-ping-column-label" aria-hidden>{label}</span>}
       {lines.map((line) => (
         <MultiPingMetricRow
           key={line.taskId}

@@ -8,6 +8,7 @@
     "all": "全部"
   },
   "label": {
+    "hardwareSpecs": "硬件与系统",
     "cpu": "CPU",
     "ram": "内存",
     "swap": "交换",
@@ -103,7 +104,8 @@
     "sortByCurrent": "当前顺序",
     "sortByExpiryAsc": "到期时间（最近）",
     "sortByExpiryDesc": "到期时间（最远）",
-    "sortByActivity": "按网络流量排序"
+    "sortByActivity": "按网络流量排序",
+    "sortShort": "排序"
   },
   "placeholder": {
     "searchNodes": "按名称、分组、标签或区域搜索",
@@ -205,7 +207,10 @@
   },
   "fleet": {
     "title": "节点群",
-    "status": "节点群状态"
+    "status": "节点群状态",
+    "expandNodes": "展开节点",
+    "expandList": "展开列表",
+    "collapseNodes": "收起节点"
   },
   "assetStats": {
     "title": "计费汇总",
@@ -382,6 +387,12 @@
     "onlineCount": "在线 {{count}} 台",
     "totalCount": "总计 {{count}} 台",
     "totalBandwidth": "实时总带宽",
+    "liveBandwidth": "实时总带宽",
+    "onlineNodes": "在线节点",
+    "offlineCount": "{{count}} 台离线",
+    "noNodes": "暂无节点",
+    "showTrends": "展开趋势",
+    "hideTrends": "收起趋势",
     "uploadNet": "上行网络",
     "downloadNet": "下行网络",
     "upload": "上传",

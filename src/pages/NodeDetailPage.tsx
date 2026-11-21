@@ -16,6 +16,7 @@ import { useAdaptiveLoadTimeRange } from '@/hooks/useAdaptiveLoadTimeRange';
 import { buildLoadChartTimeRanges } from '@/lib/chart-time-ranges';
 import { cn } from '@/lib/utils';
 import { apiService } from '@/services/api';
+import './node-detail.css';
 
 export function NodeDetailPage() {
   const { t } = useTranslation();
@@ -94,7 +95,7 @@ export function NodeDetailPage() {
   if (!uuid) return null;
 
   return (
-    <div className="space-y-5 sm:space-y-6">
+    <div className="node-detail-page space-y-3 sm:space-y-6">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <Button
           type="button"
@@ -156,6 +157,7 @@ export function NodeDetailPage() {
       {node && <NodeInfoPanel node={node} />}
 
       <ChartTimeRangeBar
+        className="node-detail-time-range"
         value={timeRange}
         onChange={setTimeRange}
         onRefresh={handleRefresh}

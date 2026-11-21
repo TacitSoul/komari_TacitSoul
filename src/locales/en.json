@@ -8,6 +8,7 @@
     "all": "All"
   },
   "label": {
+    "hardwareSpecs": "Hardware and system",
     "cpu": "CPU",
     "ram": "RAM",
     "swap": "SWAP",
@@ -103,7 +104,8 @@
     "sortByCurrent": "Current order",
     "sortByExpiryAsc": "Expiry (soonest)",
     "sortByExpiryDesc": "Expiry (latest)",
-    "sortByActivity": "Sort by network traffic"
+    "sortByActivity": "Sort by network traffic",
+    "sortShort": "Sort"
   },
   "placeholder": {
     "searchNodes": "Search by name, group, tag, or region",
@@ -205,7 +207,10 @@
   },
   "fleet": {
     "title": "FLEET",
-    "status": "FLEET STATUS"
+    "status": "FLEET STATUS",
+    "expandNodes": "Show nodes",
+    "expandList": "Full list",
+    "collapseNodes": "Hide nodes"
   },
   "assetStats": {
     "title": "Billing Summary",
@@ -387,6 +392,12 @@
     "onlineCount": "Online {{count}}",
     "totalCount": "Total {{count}}",
     "totalBandwidth": "total bandwidth",
+    "liveBandwidth": "Live bandwidth",
+    "onlineNodes": "Nodes online",
+    "offlineCount": "{{count}} offline",
+    "noNodes": "No nodes yet",
+    "showTrends": "Show trends",
+    "hideTrends": "Hide trends",
     "uploadNet": "Upload",
     "downloadNet": "Download",
     "upload": "Upload",

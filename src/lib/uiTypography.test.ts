@@ -67,7 +67,8 @@ describe('shared monitoring typography', () => {
 
   it('reserves measured phone chrome space so the fleet peek row stays above the footer', () => {
     const css = read('src/styles/monitor-ui.css');
-    expect(css).toContain('var(--monitor-mobile-chrome, 9.5rem)');
+    expect(css).toMatch(/main \.globe-monitor-layout\s*\{\s*height:\s*calc\(100dvh - var\(--monitor-mobile-chrome, 9\.5rem\)\)/);
+    expect(read('src/components/GlobeView.tsx')).toContain('globe-monitor-layout');
     const measure = read('src/components/layout/MonitorLayoutMetrics.tsx');
     expect(measure).toContain('ResizeObserver');
     expect(measure).toContain('padding.paddingBottom');
